@@ -213,6 +213,96 @@ class TestHtmlTemplate(unittest.TestCase):
         )
 
 
+class TestWorkflowGuideSkill(unittest.TestCase):
+    """Verify guide-investment-workflow skill structure."""
+
+    GUIDE_SKILL_DIR = os.path.join(SKILLS_DIR, 'guide-investment-workflow')
+
+    def test_guide_skill_has_required_files(self):
+        """Guide skill must have SKILL.md, agents/openai.yaml, and scripts."""
+        required_files = [
+            'SKILL.md',
+            'agents/openai.yaml',
+            'scripts/inspect_run.py',
+            'references/workflow.md'
+        ]
+        for relpath in required_files:
+            fpath = os.path.join(self.GUIDE_SKILL_DIR, relpath)
+            self.assertTrue(
+                os.path.exists(fpath),
+                f"Guide skill missing required file: {relpath}"
+            )
+
+    def test_guide_skill_frontmatter_complete(self):
+        """Guide skill frontmatter must include name and description."""
+        skill_md = os.path.join(self.GUIDE_SKILL_DIR, 'SKILL.md')
+        with open(skill_md, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        metadata, body = parse_frontmatter(content)
+
+        self.assertIsNotNone(metadata, "Guide skill missing frontmatter")
+        self.assertIn('name', metadata, "Guide skill missing 'name'")
+        self.assertIn('description', metadata, "Guide skill missing 'description'")
+        self.assertEqual(
+            metadata['name'],
+            'guide-investment-workflow',
+            "Guide skill name mismatch"
+        )
+
+    def test_inspect_run_script_executable(self):
+        """inspect_run.py must be executable and contain main function."""
+        script_path = os.path.join(
+            self.GUIDE_SKILL_DIR,
+            'scripts',
+            'inspect_run.py'
+        )
+
+        # Check executable permission
+        self.assertTrue(
+            os.access(script_path, os.X_OK),
+            "inspect_run.py is not executable"
+        )
+
+        # Check script content
+        with open(script_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        self.assertIn('def inspect_run', content, "Missing inspect_run function")
+        self.assertIn('def main', content, "Missing main function")
+        self.assertIn('workflow-state.json', content, "Missing workflow state handling")
+
+    def test_workflow_reference_completeness(self):
+        """workflow.md must document skill dependencies and data freshness."""
+        ref_path = os.path.join(
+            self.GUIDE_SKILL_DIR,
+            'references',
+            'workflow.md'
+        )
+
+        with open(ref_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Check key sections exist
+        required_sections = [
+            '技能依赖关系',
+            '数据新鲜度策略',
+            '单点任务示例',
+            '错误处理'
+        ]
+        for section in required_sections:
+            self.assertIn(
+                section,
+                content,
+                f"workflow.md missing section: {section}"
+            )
+
+        # Check skill table exists
+        self.assertIn('collect-market-overview', content)
+        self.assertIn('analyze-investment-signals', content)
+        self.assertIn('render-investment-report', content)
+
+
 class TestDataContracts(unittest.TestCase):
     """Verify schema files and fixture compliance with data contracts."""
 
