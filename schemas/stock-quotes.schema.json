@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "StockQuotes",
+  "description": "Structured output from fetch-stock-quotes skill.",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "status", "source", "coverage", "errors", "data"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "generated_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$" },
+    "status": { "type": "string", "enum": ["complete", "partial", "failed"] },
+    "source": {
+      "type": "object",
+      "required": ["skill", "commands"],
+      "properties": {
+        "skill": { "type": "string", "const": "fetch-stock-quotes" },
+        "commands": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["requested", "succeeded", "failed"],
+      "properties": {
+        "requested": { "type": "integer", "minimum": 0 },
+        "succeeded": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "errors": { "type": "array", "items": { "type": "string" } },
+    "data": {
+      "type": "object",
+      "properties": {
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "code", "market", "price"],
+            "properties": {
+              "name": { "type": "string" },
+              "code": { "type": "string" },
+              "market": { "type": "string", "enum": ["a", "us", "hk"] },
+              "price": { "type": "number" },
+              "change_percent": { "type": "number" },
+              "open": { "type": "number" },
+              "high": { "type": "number" },
+              "low": { "type": "number" },
+              "volume": { "type": "number" },
+              "turnover_rate": { "type": "number" },
+              "pe": { "type": "number" },
+              "pb": { "type": "number" },
+              "market_cap": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

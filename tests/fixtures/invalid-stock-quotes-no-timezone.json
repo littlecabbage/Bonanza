@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T10:30:00",
+  "status": "complete",
+  "source": {
+    "skill": "fetch-stock-quotes",
+    "commands": []
+  },
+  "coverage": {
+    "requested": 1,
+    "succeeded": 1,
+    "failed": 0
+  },
+  "errors": [],
+  "data": {
+    "quotes": []
+  }
+}

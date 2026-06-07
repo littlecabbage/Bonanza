@@ -1,0 +1,7 @@
+metadata:
+  display_name: "综合信号分析"
+  short_description: "多维度信号综合分析"
+constraints:
+  - "不输出强烈买入建议"
+  - "不给个性化仓位"
+  - "不承诺收益"

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>投资报告 - {{GENERATED_AT}}</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background-color: #0f1117;
+    color: #e1e4e8;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  h1 {
+    font-size: 1.6em;
+    color: #f0f2f5;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: #8b949e;
+    font-size: 0.85em;
+    margin-bottom: 24px;
+  }
+  h2 {
+    font-size: 1.15em;
+    color: #d2d6dc;
+    margin-bottom: 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #2d3140;
+  }
+  .card {
+    background-color: #1a1d27;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 14px;
+    border: 1px solid #2d3140;
+  }
+  .card-title {
+    font-size: 0.9em;
+    color: #8b949e;
+    margin-bottom: 6px;
+  }
+  .card-value {
+    font-size: 1.3em;
+    font-weight: 600;
+  }
+  .card-change { font-size: 0.85em; margin-left: 6px; }
+  .change-up { color: #f85149; }
+  .change-down { color: #3fb950; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+  th { text-align: left; color: #8b949e; font-weight: 500; padding: 6px 8px; border-bottom: 1px solid #2d3140; }
+  td { padding: 6px 8px; border-bottom: 1px solid #232734; }
+  .badge-market-a { display: inline-block; background-color: #c93838; color: #fff; font-size: 0.7em; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
+  .badge-market-us { display: inline-block; background-color: #326ce5; color: #fff; font-size: 0.7em; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
+  .badge-market-hk { display: inline-block; background-color: #238636; color: #fff; font-size: 0.7em; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
+  .advice-strong-buy { color: #f85149; font-weight: 600; }
+  .advice-buy { color: #d29922; font-weight: 600; }
+  .advice-hold { color: #8b949e; font-weight: 600; }
+  .advice-sell { color: #3fb950; font-weight: 600; }
+  .evidence-block { margin-bottom: 8px; }
+  .evidence-label { color: #8b949e; font-size: 0.82em; margin-bottom: 4px; }
+  .evidence-item { background-color: #12141e; padding: 4px 8px; border-radius: 4px; margin-bottom: 2px; font-size: 0.88em; }
+  .scenario-title { color: #d2d6dc; font-weight: 600; font-size: 1em; margin-bottom: 6px; }
+  .scenario-block { margin-bottom: 14px; }
+  .tag { display: inline-block; background-color: #232734; color: #8b949e; font-size: 0.78em; padding: 1px 6px; border-radius: 3px; margin-right: 4px; margin-bottom: 4px; }
+  .source-link { color: #58a6ff; text-decoration: none; font-size: 0.85em; }
+  .source-link:hover { text-decoration: underline; }
+  .disclaimer { background-color: #12141e; border-left: 3px solid #d29922; padding: 10px 14px; font-size: 0.82em; color: #8b949e; margin-top: 24px; border-radius: 0 6px 6px 0; }
+  .empty-state { color: #8b949e; font-style: italic; font-size: 0.9em; }
+  .dimension-card { background-color: #12141e; border-radius: 6px; padding: 12px; margin-bottom: 10px; border: 1px solid #232734; }
+  .dimension-name { color: #d2d6dc; font-weight: 600; font-size: 0.95em; margin-bottom: 8px; }
+  .section { margin-bottom: 28px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>投资报告</h1>
+<p class="subtitle">生成时间：{{GENERATED_AT}} | 数据来源：{{SOURCE_LINKS}}</p>
+
+<div class="section">
+<h2>市场概况</h2>
+{{MARKET_OVERVIEW_INDICES}}
+{{MARKET_OVERVIEW_HOT_STOCKS}}
+{{MARKET_OVERVIEW_SECTORS}}
+</div>
+
+<div class="section">
+<h2>信号分析</h2>
+{{SIGNALS_DIMENSIONS}}
+{{SIGNALS_CONFIDENCE}}
+{{SIGNALS_INVALIDATE_CONDITIONS}}
+</div>
+
+<div class="section">
+{{SCENARIOS_TITLE}}
+{{SCENARIOS_CONTENT}}
+</div>
+
+<div class="disclaimer">
+<strong>免责声明</strong><br>
+本报告由 AI 自动生成，仅供参考，不构成投资建议。投资有风险，入市需谨慎。
+</div>
+
+</div>
+</body>
+</html>

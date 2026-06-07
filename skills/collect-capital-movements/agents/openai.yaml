@@ -1,0 +1,14 @@
+metadata:
+  display_name: "采集资金异动"
+  short_description: "获取龙虎榜、大宗交易、主力资金流向"
+  default_prompt: "采集今日资金异动"
+
+capabilities:
+  - "龙虎榜数据采集"
+  - "大宗交易数据采集"
+  - "主力资金流向采集"
+
+constraints:
+  - "不分析趋势"
+  - "不判断意图"
+  - "依赖东方财富接口"

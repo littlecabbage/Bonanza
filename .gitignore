@@ -1,0 +1,13 @@
+# Run output directories
+.bonanza/
+
+# Generated reports
+opencli-investment-report-*.html
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS
+.DS_Store

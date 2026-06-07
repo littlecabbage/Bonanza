@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T10:30:00+08:00",
+  "status": "complete",
+  "source": {
+    "skill": "fetch-stock-quotes",
+    "commands": ["opencli eastmoney quote 000725,NVDA -f json"]
+  },
+  "coverage": {
+    "requested": 2,
+    "succeeded": 2,
+    "failed": 0
+  },
+  "errors": [],
+  "data": {
+    "quotes": [
+      {"name": "京东方A", "code": "000725", "market": "a", "price": 4.52, "change_percent": 3.5, "pe": 18.5, "pb": 1.4, "market_cap": 1560},
+      {"name": "英伟达", "code": "NVDA", "market": "us", "price": 135.0, "change_percent": 2.1, "market_cap": 33000}
+    ]
+  }
+}

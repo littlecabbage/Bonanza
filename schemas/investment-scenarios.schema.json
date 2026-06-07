@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InvestmentScenarios",
+  "description": "Structured output from build-investment-scenarios skill.",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "status", "source", "coverage", "errors", "data"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "generated_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$" },
+    "status": { "type": "string", "enum": ["complete", "partial", "failed"] },
+    "source": {
+      "type": "object",
+      "required": ["skill", "commands"],
+      "properties": {
+        "skill": { "type": "string", "const": "build-investment-scenarios" },
+        "commands": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["requested", "succeeded", "failed"],
+      "properties": {
+        "requested": { "type": "integer", "minimum": 0 },
+        "succeeded": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "errors": { "type": "array", "items": { "type": "string" } },
+    "data": {
+      "type": "object",
+      "required": ["time_range", "scenarios"],
+      "properties": {
+        "time_range": { "type": "string" },
+        "user_constraints": {
+          "type": "object",
+          "properties": {
+            "risk_tolerance": { "type": "string" },
+            "position_limit": { "type": "string" }
+          }
+        },
+        "scenarios": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "required": ["name", "trigger_conditions", "observation_indicators", "失效条件", "risks"],
+            "properties": {
+              "name": { "type": "string", "enum": ["bullish", "neutral", "bearish"] },
+              "description": { "type": "string" },
+              "trigger_conditions": { "type": "array", "items": { "type": "string" } },
+              "observation_indicators": { "type": "array", "items": { "type": "string" } },
+              "失效条件": { "type": "array", "items": { "type": "string" } },
+              "risks": { "type": "array", "items": { "type": "string" } },
+              "price_range": { "type": "object" },
+              "position_suggestion": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

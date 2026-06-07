@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T13:00:00+08:00",
+  "status": "complete",
+  "source": {
+    "skill": "build-investment-scenarios",
+    "commands": []
+  },
+  "coverage": {
+    "requested": 1,
+    "succeeded": 1,
+    "failed": 0
+  },
+  "errors": [],
+  "data": {
+    "time_range": "1-3 months",
+    "user_constraints": {
+      "risk_tolerance": "medium",
+      "position_limit": "20%"
+    },
+    "scenarios": [
+      {
+        "name": "bullish",
+        "description": "PCB产业链持续受益AI服务器需求",
+        "trigger_conditions": ["NVDA财报超预期", "板块净流入持续正"],
+        "observation_indicators": ["NVDA股价", "板块主力净流入"],
+        "失效条件": ["NVDA财报低于预期", "板块龙头跌破5日线"],
+        "risks": ["AI需求不及预期", "PCB产能过剩"],
+        "price_range": {"entry": "100-114元", "target": "130-150元"},
+        "position_suggestion": "15-20%"
+      },
+      {
+        "name": "neutral",
+        "description": "市场观望，等待催化剂",
+        "trigger_conditions": ["板块净流入中性", "龙头股横盘"],
+        "observation_indicators": ["板块换手率", "雪球讨论热度"],
+        "失效条件": ["板块龙头连续下跌3日"],
+        "risks": ["缺乏催化剂", "资金面偏紧"]
+      },
+      {
+        "name": "bearish",
+        "description": "资金流出板块，龙头跌破支撑",
+        "trigger_conditions": ["板块主力净流出持续", "龙头跌破20日线"],
+        "observation_indicators": ["板块净流入方向", "龙头股价vs均线"],
+        "失效条件": ["板块强力反弹超3%"],
+        "risks": ["宏观政策收紧", "产业链下行周期"]
+      }
+    ]
+  }
+}

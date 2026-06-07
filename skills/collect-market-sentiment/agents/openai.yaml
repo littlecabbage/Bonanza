@@ -1,0 +1,14 @@
+metadata:
+  display_name: "采集市场情绪"
+  short_description: "从雪球、东方财富获取热门讨论和情绪指标"
+  default_prompt: "采集今日市场情绪"
+
+capabilities:
+  - "雪球热门话题采集"
+  - "东方财富讨论采集"
+  - "情绪数据提取"
+
+constraints:
+  - "不量化情绪"
+  - "不分析趋势"
+  - "需要平台访问权限"

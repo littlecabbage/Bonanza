@@ -1,0 +1,23 @@
+name: fetch-stock-quotes
+display_name: "股票行情获取"
+description: "获取股票实时行情数据，支持A股、港股、美股"
+tags:
+  - market-data
+  - quotes
+  - stocks
+parameters:
+  - name: stocks
+    type: array
+    required: false
+    description: "股票代码列表，如 ['000001', '600519', 'AAPL']"
+  - name: input_file
+    type: string
+    required: false
+    description: "实体识别结果文件路径"
+  - name: output_file
+    type: string
+    required: true
+    description: "输出文件路径，如 .bonanza/runs/<run-id>/stock-quotes.json"
+returns:
+  type: object
+  description: "股票行情数据列表"

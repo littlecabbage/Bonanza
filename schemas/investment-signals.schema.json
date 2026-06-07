@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InvestmentSignals",
+  "description": "Structured output from analyze-investment-signals skill.",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "status", "source", "coverage", "errors", "data"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "generated_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$" },
+    "status": { "type": "string", "enum": ["complete", "partial", "failed"] },
+    "source": {
+      "type": "object",
+      "required": ["skill", "commands"],
+      "properties": {
+        "skill": { "type": "string", "const": "analyze-investment-signals" },
+        "commands": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["requested", "succeeded", "failed"],
+      "properties": {
+        "requested": { "type": "integer", "minimum": 0 },
+        "succeeded": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "errors": { "type": "array", "items": { "type": "string" } },
+    "data": {
+      "type": "object",
+      "required": ["dimensions", "confidence", "失效条件"],
+      "properties": {
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "supporting_evidence", "opposing_evidence", "missing_data"],
+            "properties": {
+              "name": { "type": "string" },
+              "supporting_evidence": { "type": "array", "items": { "type": "object" } },
+              "opposing_evidence": { "type": "array", "items": { "type": "object" } },
+              "missing_data": { "type": "array", "items": { "type": "string" } },
+              "conclusion": { "type": "string" }
+            }
+          }
+        },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+        "失效条件": { "type": "array", "items": { "type": "string" } },
+        "coverage_rate": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    }
+  }
+}

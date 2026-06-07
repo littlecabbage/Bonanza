@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T10:00:00+08:00",
+  "run_id": "2026-06-07-001",
+  "status": "partial",
+  "steps": [
+    {
+      "skill": "collect-market-overview",
+      "status": "complete",
+      "output_file": "market-overview.json",
+      "completed_at": "2026-06-07T10:05:00+08:00"
+    },
+    {
+      "skill": "collect-blogger-updates",
+      "status": "failed",
+      "errors": ["Browser session expired for Twitter"]
+    }
+  ],
+  "recommended_next": [
+    {
+      "skill": "collect-market-sentiment",
+      "reason": "Market overview available, sentiment data will strengthen analysis"
+    }
+  ]
+}

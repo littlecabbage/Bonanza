@@ -1,0 +1,14 @@
+metadata:
+  display_name: "采集博主动态"
+  short_description: "从财经博主获取最新推文和观点"
+  default_prompt: "采集今日博主动态"
+
+capabilities:
+  - "批量采集博主推文"
+  - "提取推文元数据"
+  - "记录提及股票"
+
+constraints:
+  - "不分析内容"
+  - "不提取信号"
+  - "需要 Twitter 访问权限"

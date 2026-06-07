@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T10:00:00+08:00",
+  "status": "complete",
+  "source": {
+    "skill": "collect-market-overview",
+    "commands": ["opencli eastmoney index-board -f json", "opencli eastmoney hot-rank --limit 10 -f json", "opencli eastmoney sectors --limit 10 -f json"]
+  },
+  "coverage": {
+    "requested": 3,
+    "succeeded": 3,
+    "failed": 0
+  },
+  "errors": [],
+  "data": {
+    "indices": [
+      {"name": "上证指数", "code": "000001", "price": 3245.68, "change_percent": 0.35, "volume": 3400}
+    ],
+    "hot_stocks": [
+      {"name": "京东方A", "code": "000725", "rank": 1, "change_percent": 3.5, "heat_score": 95}
+    ],
+    "sectors": [
+      {"name": "元器件", "code": "BK0459", "rank": 1, "change_percent": 2.1, "main_net_inflow": 15.3, "lead_stock": "鹏鼎控股", "lead_code": "002938"}
+    ]
+  }
+}
