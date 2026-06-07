@@ -35,20 +35,7 @@ def classify_stocks(stocks, ref_data):
                 break
 
         if not found:
-            if code.isdigit():
-                if code.startswith('0') or code.startswith('3') or code.startswith('6'):
-                    if code not in classified['a']:
-                        classified['a'].append(code)
-                elif code.startswith('0') and len(code) == 4:
-                    if code not in classified['hk']:
-                        classified['hk'].append(code)
-                else:
-                    unrecognized.append(code)
-            elif code.isupper():
-                if code not in classified['us']:
-                    classified['us'].append(code)
-            else:
-                unrecognized.append(code)
+            unrecognized.append(code)
 
     return classified, unrecognized
 
