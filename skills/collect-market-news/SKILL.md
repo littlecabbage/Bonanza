@@ -13,8 +13,6 @@ allowed-tools: Bash(opencli:*)
 ```json
 {
   "eastmoney_kuaixun": true,
-  "policy_news": true,
-  "industry_news": true,
   "output_file": ".bonanza/runs/<run-id>/market-news.json"
 }
 ```
@@ -29,20 +27,6 @@ allowed-tools: Bash(opencli:*)
 - 实时财经快讯
 - 重要公告
 - 市场动态
-
-### 2. 政策新闻
-
-调用 `opencli eastmoney policy` 获取：
-- 监管政策
-- 宏观经济政策
-- 行业规范
-
-### 3. 行业新闻
-
-调用 `opencli eastmoney industry` 获取：
-- 行业动态
-- 公司新闻
-- 产品发布
 
 ## 错误处理
 

@@ -93,23 +93,25 @@ def check_json_files():
 
 
 def check_html_template():
-    """Check HTML template for structural issues."""
+    """Check HTML template for structural issues.
+
+    Expected at skills/render-investment-report/assets/report-template.html.
+    Until that skill is created, reports SKIP.
+    """
     results = []
     template_path = os.path.join(
-        SKILLS_DIR, 'opencli-investment-report', 'references', 'report-template.html'
+        SKILLS_DIR, 'render-investment-report', 'assets', 'report-template.html'
     )
     skill_md_path = os.path.join(
-        SKILLS_DIR, 'opencli-investment-report', 'SKILL.md'
+        SKILLS_DIR, 'render-investment-report', 'SKILL.md'
     )
 
     if not os.path.exists(template_path):
-        results.append(('FAIL', 'HTML template not found'))
+        results.append(('SKIP', 'HTML template not yet created (pending render-investment-report skill)'))
         return results
 
     with open(template_path, encoding='utf-8') as f:
         html = f.read()
-    with open(skill_md_path, encoding='utf-8') as f:
-        skill_md = f.read()
 
     # Duplicate <h2> sections
     h2_pattern = re.compile(r'<h2>\s*([^<]+)\s*</h2>')
@@ -124,21 +126,24 @@ def check_html_template():
     else:
         results.append(('PASS', 'No duplicate <h2> sections'))
 
-    # CSS class consistency
-    skill_classes = set(re.findall(r'\.advice-[\w-]+', skill_md))
-    html_classes = set(re.findall(r'\.advice-[\w-]+', html))
-    skill_advice = {c for c in skill_classes if 'level' not in c}
-    html_advice = {c for c in html_classes if 'level' not in c}
-    inconsistent = skill_advice.symmetric_difference(html_advice)
-    inconsistent.discard('.advice-grid')
-    inconsistent.discard('.advice-grid-item')
-    if inconsistent:
-        for c in sorted(inconsistent):
-            in_skill = c in skill_classes
-            in_html = c in html_classes
-            results.append(('FAIL', f'CSS "{c}": SKILL.md={in_skill}, HTML={in_html}'))
-    else:
-        results.append(('PASS', 'CSS class names consistent'))
+    # CSS class consistency (only if SKILL.md exists)
+    if os.path.exists(skill_md_path):
+        with open(skill_md_path, encoding='utf-8') as f:
+            skill_md = f.read()
+        skill_classes = set(re.findall(r'\.advice-[\w-]+', skill_md))
+        html_classes = set(re.findall(r'\.advice-[\w-]+', html))
+        skill_advice = {c for c in skill_classes if 'level' not in c}
+        html_advice = {c for c in html_classes if 'level' not in c}
+        inconsistent = skill_advice.symmetric_difference(html_advice)
+        inconsistent.discard('.advice-grid')
+        inconsistent.discard('.advice-grid-item')
+        if inconsistent:
+            for c in sorted(inconsistent):
+                in_skill = c in skill_classes
+                in_html = c in html_classes
+                results.append(('FAIL', f'CSS "{c}": SKILL.md={in_skill}, HTML={in_html}'))
+        else:
+            results.append(('PASS', 'CSS class names consistent'))
 
     # Placeholder count
     placeholders = re.findall(r'\{\{[^}]+\}\}', html)

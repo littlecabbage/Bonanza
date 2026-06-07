@@ -13,7 +13,6 @@ allowed-tools: Bash(opencli:*)
 ```json
 {
   "longhu_bang": true,
-  "block_trades": true,
   "main_fund_flow": true,
   "output_file": ".bonanza/runs/<run-id>/capital-movements.json"
 }
@@ -30,15 +29,9 @@ allowed-tools: Bash(opencli:*)
 - 机构和游资买卖情况
 - 上榜原因
 
-### 2. 大宗交易
+### 2. 主力资金流向
 
-调用 `opencli eastmoney block-trades` 获取：
-- 大宗交易记录
-- 成交价格、折溢价
-
-### 3. 主力资金流向
-
-调用 `opencli eastmoney fund-flow` 获取：
+调用 `opencli eastmoney money-flow` 获取：
 - 板块资金净流入/流出
 - 个股主力资金动向
 

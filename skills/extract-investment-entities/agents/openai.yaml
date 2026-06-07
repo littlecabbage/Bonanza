@@ -1,0 +1,23 @@
+name: extract-investment-entities
+display_name: "投资实体识别"
+description: "从文本数据中提取股票、行业、概念等投资实体"
+tags:
+  - nlp
+  - extraction
+  - entities
+parameters:
+  - name: input_text
+    type: string
+    required: false
+    description: "纯文本输入"
+  - name: input_json
+    type: string
+    required: false
+    description: "JSON格式输入（采集技能输出）"
+  - name: output_file
+    type: string
+    required: true
+    description: "输出文件路径，如 .bonanza/runs/<run-id>/investment-entities.json"
+returns:
+  type: object
+  description: "识别的投资实体列表"

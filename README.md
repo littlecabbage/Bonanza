@@ -1,69 +1,55 @@
 # Bonanza
 
-**模块化投资研究 Skill 集合** — 由 Agent 编排的多步投资分析工具。
+**模块化投资研究 Skill 集合** — 由 Agent 编排、单点 Skill 执行的多步投资分析工具。
 
 > money loves me
 
-## 当前状态
-
-正在进行从单体 Skill 到模块化 Skill 的重构。当前仓库同时包含：
-- 旧单体入口 `opencli-investment-report`
-- 新模块化 Skill（逐步迁移中）
-
-### 当前 Skill 结构
+## 架构
 
 ```text
-skills/
-└── opencli-investment-report/      ← 旧单体 Skill（迁移中）
-    ├── SKILL.md
-    └── references/
-        ├── bloggers.json
-        ├── report-template.html
-        └── stock-codes.json
-```
-
-### 目标 Skill 结构
-
-重构完成后将包含 11 个单点 Skill：
-
-```text
-skills/
-├── guide-investment-workflow/      ← 流程导航
-├── collect-blogger-updates/        ← 博主动态采集
-├── collect-market-overview/        ← 市场概览采集
-├── collect-market-sentiment/       ← 市场情绪采集
-├── collect-capital-movements/      ← 资金异动采集
-├── collect-market-news/            ← 财经快讯采集
-├── extract-investment-entities/    ← 实体识别
-├── fetch-stock-quotes/             ← 行情查询
-├── analyze-investment-signals/     ← 综合信号分析
-├── build-investment-scenarios/     ← 可选情景推演
-├── render-investment-report/       ← 确定性 HTML 渲染
-└── opencli-investment-report/      ← 旧兼容入口（迁移后只保留引导）
+用户提出目标 → Agent 判断场景、维护状态
+        ↓
+  Agent 选择 Skill → 单点 Skill 返回结构化产物
+        ↓
+  Agent 验收结果 → 推荐下一步
 ```
 
 每个 Skill 只完成一个明确任务，Agent 每轮默认只调用一个 Skill。
 
-## 验证命令
+## Skill 清单
 
-```bash
-# 仓库级测试
-python3 -m unittest discover -s tests -v
+| Skill | 职责 | 状态 |
+|-------|------|------|
+| `guide-investment-workflow` | 流程导航与状态管理 | ✅ 已创建 |
+| `collect-blogger-updates` | 博主动态采集 | ✅ 已创建 |
+| `collect-market-overview` | 市场概览采集 | ✅ 已创建 |
+| `collect-market-sentiment` | 市场情绪采集 | ✅ 已创建 |
+| `collect-capital-movements` | 资金异动采集 | ✅ 已创建 |
+| `collect-market-news` | 财经快讯采集 | ✅ 已创建 |
+| `extract-investment-entities` | 投资实体识别 | ✅ 已创建 |
+| `fetch-stock-quotes` | 行情查询 | ✅ 已创建 |
+| `analyze-investment-signals` | 综合信号分析 | 🔲 待建 |
+| `build-investment-scenarios` | 可选情景推演 | 🔲 待建 |
+| `render-investment-report` | 确定性 HTML 渲染 | 🔲 待建 |
 
-# 仓库结构验证
-python3 scripts/validate_repository.py
+## 运行目录结构
 
-# 单个 Skill 验证
-python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py skills/<skill-name>
+所有产物写入 `.bonanza/runs/<YYYY-MM-DD>-<run-id>/`：
+
+```text
+.bonanza/runs/<YYYY-MM-DD>-<run-id>/
+├── workflow-state.json        ← 流程状态
+├── blogger-updates.json       ← 博主动态
+├── market-overview.json       ← 市场概览
+├── market-sentiment.json      ← 市场情绪
+├── capital-movements.json     ← 资金异动
+├── market-news.json           ← 财经快讯
+├── investment-entities.json   ← 投资实体
+├── stock-quotes.json          ← 行情数据
+├── investment-signals.json    ← 综合信号
+├── investment-scenarios.json  ← 情景推演
+└── investment-report.html     ← 最终报告
 ```
-
-## 已知基线问题
-
-当前旧模板存在以下问题（将在 Task 8 修复）：
-
-1. **重复章节**：`<h2>一、投资建议（核心）</h2>` 在模板中出现两次
-2. **CSS 类名不一致**：SKILL.md 使用 `.advice-buy-strong`，HTML 模板使用 `.advice-strong-buy`
-3. **残留占位符**：模板包含约 30+ 个 `{{PLACEHOLDER}}` 占位符（模板本身正常，渲染后必须为零）
 
 ## 数据契约
 
@@ -81,12 +67,17 @@ python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py skills/<
 }
 ```
 
-## 运行产物目录
+JSON Schema 定义位于 `schemas/` 目录，每个 Skill 对应一个 schema 文件。
 
-完整报告流程默认写入：
+## 验证命令
 
-```text
-.bonanza/runs/<YYYY-MM-DD>-<run-id>/
+```bash
+# 仓库级测试
+python3 -m unittest discover -s tests -v
+
+# 仓库结构验证
+python3 scripts/validate_repository.py
+
+# 单个 Skill 验证
+python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py skills/<skill-name>
 ```
-
-单点任务允许用户指定其他输出路径。

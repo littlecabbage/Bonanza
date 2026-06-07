@@ -1,0 +1,35 @@
+{
+  "stocks": {
+    "000001": {"name": "平安银行", "aliases": ["平安", "pingan"], "market": "a"},
+    "000002": {"name": "万科A", "aliases": ["万科", "vanke"], "market": "a"},
+    "000858": {"name": "五粮液", "aliases": ["五粮液", "wuliangye"], "market": "a"},
+    "002594": {"name": "比亚迪", "aliases": ["比亚迪", "byd"], "market": "a"},
+    "300750": {"name": "宁德时代", "aliases": ["宁德时代", "CATL"], "market": "a"},
+    "600000": {"name": "浦发银行", "aliases": ["浦发", "pufa"], "market": "a"},
+    "600036": {"name": "招商银行", "aliases": ["招行", "cmb"], "market": "a"},
+    "600519": {"name": "贵州茅台", "aliases": ["茅台", "maotai"], "market": "a"},
+    "601398": {"name": "工商银行", "aliases": ["工行", "icbc"], "market": "a"},
+    "0700": {"name": "腾讯控股", "aliases": ["腾讯", "tencent"], "market": "hk"},
+    "0998": {"name": "阿里巴巴-W", "aliases": ["阿里", "alibaba", "baba"], "market": "hk"},
+    "BABA": {"name": "阿里巴巴", "aliases": ["阿里", "alibaba"], "market": "us"},
+    "TSLA": {"name": "特斯拉", "aliases": ["特斯拉", "tesla"], "market": "us"},
+    "AAPL": {"name": "苹果", "aliases": ["苹果", "apple"], "market": "us"},
+    "NVDA": {"name": "英伟达", "aliases": ["英伟达", "nvidia"], "market": "us"}
+  },
+  "industries": {
+    "银行": {"code": "430037", "aliases": ["银行业", "银行股"]},
+    "白酒": {"code": "430043", "aliases": ["白酒股", "酒类"]},
+    "新能源汽车": {"code": "430074", "aliases": ["新能源车", "电动车"]},
+    "半导体": {"code": "430055", "aliases": ["芯片", "集成电路"]},
+    "人工智能": {"code": "430063", "aliases": ["AI", "智能"]},
+    "光伏": {"code": "430058", "aliases": ["太阳能", "光伏产业"]},
+    "医药": {"code": "430038", "aliases": ["医药股", "医疗"]}
+  },
+  "concepts": {
+    "国产替代": {"code": "BK1123", "aliases": ["国产化", "自主可控"]},
+    "数字经济": {"code": "BK1124", "aliases": ["数字化", "数字中国"]},
+    "碳中和": {"code": "BK1125", "aliases": ["双碳", "低碳"]},
+    "元宇宙": {"code": "BK1126", "aliases": ["metaverse"]},
+    "东数西算": {"code": "BK1127", "aliases": ["算力"]}
+  }
+}

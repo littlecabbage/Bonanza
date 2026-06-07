@@ -13,7 +13,6 @@ allowed-tools: Bash(opencli:*)
 ```json
 {
   "xueqiu_hot_topics": true,
-  "eastmoney_discussions": true,
   "output_file": ".bonanza/runs/<run-id>/market-sentiment.json"
 }
 ```
@@ -24,16 +23,10 @@ allowed-tools: Bash(opencli:*)
 
 ### 1. 雪球热门话题
 
-调用 `opencli xueqiu hot-topics` 获取：
+调用 `opencli xueqiu hot` 获取：
 - 热门讨论主题
 - 参与人数
 - 讨论活跃度
-
-### 2. 东方财富讨论
-
-调用 `opencli eastmoney discussions` 获取：
-- 热门股票讨论
-- 情绪倾向（看多/看空）
 
 ## 错误处理
 

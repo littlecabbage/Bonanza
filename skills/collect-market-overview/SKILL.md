@@ -25,7 +25,7 @@ allowed-tools: Bash(opencli:*)
 
 ### 1. 大盘指数
 
-调用 `opencli eastmoney index` 获取：
+调用 `opencli eastmoney index-board` 获取：
 - 上证指数 (000001)
 - 深证成指 (399001)
 - 创业板指 (399006)
@@ -39,7 +39,7 @@ allowed-tools: Bash(opencli:*)
 
 ### 3. 热门股票
 
-调用 `opencli eastmoney hot-stocks` 获取：
+调用 `opencli eastmoney hot-rank` 获取：
 - 市场关注度最高的股票
 - 按热度排序
 

@@ -25,7 +25,7 @@ allowed-tools: Bash(opencli:*)
 ## 采集流程
 
 1. 读取博主列表配置
-2. 对每个博主调用 `opencli twitter blogger-tweets`
+2. 对每个博主调用 `opencli twitter tweets`
 3. 提取推文内容、发布时间、提及股票
 4. 写入 `blogger-updates.json`
 
