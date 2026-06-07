@@ -96,7 +96,6 @@ def check_html_template():
     """Check HTML template for structural issues.
 
     Expected at skills/render-investment-report/assets/report-template.html.
-    Until that skill is created, reports SKIP.
     """
     results = []
     template_path = os.path.join(
@@ -107,7 +106,7 @@ def check_html_template():
     )
 
     if not os.path.exists(template_path):
-        results.append(('SKIP', 'HTML template not yet created (pending render-investment-report skill)'))
+        results.append(('FAIL', 'HTML template not found at render-investment-report/assets/report-template.html'))
         return results
 
     with open(template_path, encoding='utf-8') as f:

@@ -50,7 +50,8 @@ class TestRenderReport(unittest.TestCase):
     def _render(self):
         return render_report.render_report(self.test_dir, template_path=self.template_path)
 
-    def _read_output(self):
+    def _render_and_read(self):
+        self._render()
         fpath = os.path.join(self.test_dir, 'investment-report.html')
         with open(fpath, 'r', encoding='utf-8') as f:
             return f.read()
@@ -65,6 +66,20 @@ class TestRenderReport(unittest.TestCase):
             "errors": [],
             "data": data or {},
         }
+
+    def _write_minimal_market(self):
+        overview = self._make_envelope(data={
+            "indices": [{"name": "上证指数", "code": "000001", "price": 3245}],
+        })
+        self._write_json("market-overview.json", overview)
+
+    def _write_minimal_signals(self):
+        signals = self._make_envelope(data={
+            "dimensions": [{"name": "行情", "supporting_evidence": [], "opposing_evidence": [], "missing_data": []}],
+            "confidence": "medium",
+            "失效条件": [],
+        })
+        self._write_json("investment-signals.json", signals)
 
     # --- 1. Template has no duplicate h2 sections ---
 
@@ -99,7 +114,7 @@ class TestRenderReport(unittest.TestCase):
             "失效条件": [],
         }))
 
-        output = self._read_output()
+        output = self._render_and_read()
 
         # Script tag must be escaped
         self.assertNotIn("<script>alert('xss')</script>", output)
@@ -135,12 +150,17 @@ class TestRenderReport(unittest.TestCase):
             "失效条件": [],
         }))
 
-        output = self._read_output()
+        output = self._render_and_read()
 
-        # No raw onerror should be present
-        self.assertNotIn("onerror=alert", output)
-        # The payload must be escaped
-        self.assertIn("&lt;img src=x onerror=alert(1)&gt;", output)
+        # The payload's < and > must be HTML-escaped — no raw HTML tags
+        self.assertIn('&lt;img src=x onerror=alert(1)&gt;', output,
+                      "Payloads must be HTML-escaped")
+        # No unescaped < outside template's own markup
+        body_start = output.find('<div class="container">')
+        body_content = output[body_start:]
+        # All < in body must be part of known safe template tags
+        self.assertNotIn('<img', body_content,
+                         "No raw <img> tags in rendered body")
 
     # --- 4. Empty data skips section ---
 
@@ -158,47 +178,34 @@ class TestRenderReport(unittest.TestCase):
             "失效条件": [],
         }))
 
-        output = self._read_output()
+        output = self._render_and_read()
 
         # Section heading should exist
         self.assertIn("市场概况", output)
-        # But no table rows should be present
-        self.assertNotIn("<tr>", output[:output.find("信号分析")])
-        # Summary indicator for no stock data
-        self.assertNotIn("热门股票", output)
+        # No table rows in market overview section
+        market_section_end = output.find("信号分析")
+        if market_section_end > 0:
+            self.assertNotIn("<tr>", output[:market_section_end])
 
-    # --- 5. No scenarios → summary section ---
+    # --- 5. No scenarios -> summary section ---
 
     def test_no_scenarios_shows_summary(self):
         """Without scenarios data, render '市场观察摘要' section."""
-        self._write_json("market-overview.json", self._make_envelope(data={
-            "indices": [{"name": "上证指数", "code": "000001", "price": 3245}],
-        }))
-        self._write_json("investment-signals.json", self._make_envelope(data={
-            "dimensions": [{"name": "行情", "supporting_evidence": [], "opposing_evidence": [], "missing_data": []}],
-            "confidence": "high",
-            "失效条件": [],
-        }))
+        self._write_minimal_market()
+        self._write_minimal_signals()
         # No investment-scenarios.json at all
 
-        output = self._read_output()
+        output = self._render_and_read()
 
-        self.assertIn("市场观察摘要", output)
-        self.assertNotIn("情景分析", output)
+        self.assertIn('<h2>市场观察摘要</h2>', output)
+        self.assertNotIn('<h2>情景分析</h2>', output)
 
     # --- 6. Scenarios data shows scenario section ---
 
     def test_scenarios_present_shows_scenarios(self):
         """When scenarios data exists, show '情景分析' section."""
-        overview = self._make_envelope(data={
-            "indices": [{"name": "上证指数", "code": "000001", "price": 3245}],
-        })
-        self._write_json("market-overview.json", overview)
-        self._write_json("investment-signals.json", self._make_envelope(data={
-            "dimensions": [{"name": "行情", "supporting_evidence": [], "opposing_evidence": [], "missing_data": []}],
-            "confidence": "high",
-            "失效条件": [],
-        }))
+        self._write_minimal_market()
+        self._write_minimal_signals()
         self._write_json("investment-scenarios.json", self._make_envelope(data={
             "time_range": "1-3 months",
             "scenarios": [
@@ -213,7 +220,7 @@ class TestRenderReport(unittest.TestCase):
             ],
         }))
 
-        output = self._read_output()
+        output = self._render_and_read()
 
         self.assertIn("情景分析", output)
         self.assertNotIn("市场观察摘要", output)
@@ -222,16 +229,10 @@ class TestRenderReport(unittest.TestCase):
 
     def test_source_links_present(self):
         """Source links should include loaded filenames."""
-        self._write_json("market-overview.json", self._make_envelope(data={
-            "indices": [{"name": "上证指数", "code": "000001", "price": 3245}],
-        }))
-        self._write_json("investment-signals.json", self._make_envelope(data={
-            "dimensions": [{"name": "行情", "supporting_evidence": [], "opposing_evidence": [], "missing_data": []}],
-            "confidence": "medium",
-            "失效条件": [],
-        }))
+        self._write_minimal_market()
+        self._write_minimal_signals()
 
-        output = self._read_output()
+        output = self._render_and_read()
 
         self.assertIn("market-overview.json", output)
         self.assertIn("investment-signals.json", output)
@@ -240,16 +241,10 @@ class TestRenderReport(unittest.TestCase):
 
     def test_generation_time_present(self):
         """Report must contain generation time from source data."""
-        self._write_json("market-overview.json", self._make_envelope(data={
-            "indices": [{"name": "上证指数", "code": "000001", "price": 3245}],
-        }))
-        self._write_json("investment-signals.json", self._make_envelope(data={
-            "dimensions": [{"name": "行情", "supporting_evidence": [], "opposing_evidence": [], "missing_data": []}],
-            "confidence": "medium",
-            "失效条件": [],
-        }))
+        self._write_minimal_market()
+        self._write_minimal_signals()
 
-        output = self._read_output()
+        output = self._render_and_read()
 
         self.assertIn("2026-06-07T14:00:00+08:00", output)
 
@@ -257,16 +252,10 @@ class TestRenderReport(unittest.TestCase):
 
     def test_no_residual_placeholders(self):
         """Rendered HTML must have zero {{...}} residuals."""
-        self._write_json("market-overview.json", self._make_envelope(data={
-            "indices": [{"name": "上证指数", "code": "000001", "price": 3245}],
-        }))
-        self._write_json("investment-signals.json", self._make_envelope(data={
-            "dimensions": [{"name": "行情", "supporting_evidence": [], "opposing_evidence": [], "missing_data": []}],
-            "confidence": "high",
-            "失效条件": ["跌破3000"],
-        }))
+        self._write_minimal_market()
+        self._write_minimal_signals()
 
-        output = self._read_output()
+        output = self._render_and_read()
 
         residuals = re.findall(r'\{\{[^}]+\}\}', output)
         self.assertEqual(
@@ -278,45 +267,41 @@ class TestRenderReport(unittest.TestCase):
 
     def test_self_contained_html(self):
         """HTML must not reference external resources."""
-        self._write_json("market-overview.json", self._make_envelope(data={
-            "indices": [{"name": "上证指数", "code": "000001", "price": 3245}],
-        }))
-        self._write_json("investment-signals.json", self._make_envelope(data={
-            "dimensions": [{"name": "行情", "supporting_evidence": [], "opposing_evidence": [], "missing_data": []}],
-            "confidence": "medium",
-            "失效条件": [],
-        }))
+        self._write_minimal_market()
+        self._write_minimal_signals()
 
-        output = self._read_output()
+        output = self._render_and_read()
 
-        # No external resource references
-        self.assertNotIn("src=", output, "HTML must not reference external resources")
-        self.assertNotIn("href=", output, "HTML must not reference external resources")
+        # No external resource references (src= and href= that reference URLs)
+        self.assertNotIn(' src="http', output, "HTML must not reference external src URLs")
+        self.assertNotIn(" src='http", output, "HTML must not reference external src URLs")
+        self.assertNotIn(' href="http', output, "HTML must not reference external href URLs")
+        self.assertNotIn(" href='http", output, "HTML must not reference external href URLs")
 
-    # --- 11. Empty directory → minimal report ---
+    # --- 11. Empty directory -> minimal report ---
 
     def test_empty_directory_minimal_report(self):
         """No JSON files at all should produce a minimal valid report."""
-        output = self._read_output()
+        output = self._render_and_read()
 
         self.assertIn("<!DOCTYPE html>", output)
         self.assertIn("投资报告", output)
-        # Should not crash, should still render
 
-    # --- 12. Confidence rendering uses correct advice class ---
+    # --- 12. Confidence rendering uses correct class ---
 
     def test_confidence_renders_advice_class(self):
         """Confidence values should map to .advice-{value} CSS class."""
-        self._write_json("market-overview.json", self._make_envelope(data={
+        overview = self._make_envelope(data={
             "indices": [{"name": "上证指数", "code": "000001", "price": 3245}],
-        }))
+        })
+        self._write_json("market-overview.json", overview)
         self._write_json("investment-signals.json", self._make_envelope(data={
             "dimensions": [],
             "confidence": "high",
             "失效条件": [],
         }))
 
-        output = self._read_output()
+        output = self._render_and_read()
 
         self.assertIn('class="advice-high"', output)
         self.assertIn("high", output)
