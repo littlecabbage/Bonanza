@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Tests for collect.py (collect-blogger-updates) — all subprocess.run calls are mocked."""
 
+import importlib.util
 import json
 import os
 import re
@@ -9,15 +10,16 @@ import tempfile
 import unittest
 from unittest.mock import patch, MagicMock
 
-SCRIPT_DIR = os.path.join(
+MODULE_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     'skills',
     'collect-blogger-updates',
-    'scripts'
+    'scripts',
+    'collect.py',
 )
-sys.path.insert(0, SCRIPT_DIR)
-
-import collect
+spec = importlib.util.spec_from_file_location("collect_blogger_mod", MODULE_PATH)
+collect = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(collect)
 
 SAMPLE_BLOGGER = {"username": "wallstreetbull", "name": "华尔街多头", "focus": "美股科技股"}
 SAMPLE_TWEET = {
