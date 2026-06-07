@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect market overview data via opencli eastmoney commands."""
+"""Collect market overview data via opencli."""
 
 import json
 import re
