@@ -199,7 +199,7 @@ class TestDirectQuoteQuery(unittest.TestCase):
         shutil.rmtree(self.workdir, ignore_errors=True)
 
     @patch("fetch_quotes.load_stock_codes", return_value=_build_ref_data())
-    @patch("subprocess.run", return_value=_mock_process({
+    @patch("subprocess.run", return_value=_mock_subprocess({
         "data": [
             {"name": "京东方A", "code": "000725", "market": "a",
              "price": 4.52, "changePercent": 3.5,

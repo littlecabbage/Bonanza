@@ -153,10 +153,7 @@ class TestHtmlTemplate(unittest.TestCase):
     def test_no_duplicate_h2_sections(self):
         """Template must not have duplicate <h2> sections."""
         content = self._read_template()
-        if content is None:
-            self.skipTest(
-                "render-investment-report template not yet created"
-            )
+        self.assertIsNotNone(content, "Template must exist")
         h2_pattern = re.compile(r'<h2>\s*([^<]+)\s*</h2>')
         headings = h2_pattern.findall(content)
         seen = {}
