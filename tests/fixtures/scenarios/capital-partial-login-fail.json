@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T10:00:00+08:00",
+  "status": "partial",
+  "source": {
+    "skill": "collect-capital-movements",
+    "commands": ["opencli eastmoney longhu --limit 5 -f json"]
+  },
+  "coverage": { "requested": 3, "succeeded": 2, "failed": 1 },
+  "errors": ["Login required for source: eastmoney fund-flow — skipped"],
+  "data": {
+    "capital_items": [
+      {"stock": "000725", "net_inflow": 52000000, "rank": 1},
+      {"stock": "002938", "net_inflow": 18000000, "rank": 2}
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+name: render-investment-report
+display_name: "渲染投资报告"
+description: "将 JSON 产物渲染为深色主题 HTML 投资报告"
+tags:
+  - rendering
+  - html
+  - report
+parameters:
+  - name: run_dir
+    type: string
+    required: true
+    description: "运行目录路径，包含所有 JSON 产物文件"
+  - name: output_file
+    type: string
+    required: false
+    description: "输出 HTML 文件路径，默认 investment-report.html"
+returns:
+  type: string
+  description: "生成的 HTML 报告文件路径"

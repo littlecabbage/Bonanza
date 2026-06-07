@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T10:00:00+08:00",
+  "status": "partial",
+  "source": {
+    "skill": "collect-blogger-updates",
+    "commands": ["opencli twitter tweets @Boqll5Tppdalvtw --limit 3 -f json"]
+  },
+  "coverage": { "requested": 2, "succeeded": 0, "failed": 2 },
+  "errors": [
+    "HTTP 401 — authentication expired for Twitter API",
+    "All blogger sources failed: authentication required"
+  ],
+  "data": { "bloggers": [] }
+}

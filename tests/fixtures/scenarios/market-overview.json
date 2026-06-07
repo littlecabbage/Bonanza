@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T10:00:00+08:00",
+  "status": "complete",
+  "source": {
+    "skill": "collect-market-overview",
+    "commands": ["opencli eastmoney index-board -f json"]
+  },
+  "coverage": { "requested": 1, "succeeded": 1, "failed": 0 },
+  "errors": [],
+  "data": {
+    "indices": [
+      {"name": "上证指数", "code": "000001", "price": 3245.68, "change_percent": 0.35}
+    ],
+    "hot_stocks": [],
+    "sectors": []
+  }
+}

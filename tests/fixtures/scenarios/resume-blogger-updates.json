@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T10:00:00+08:00",
+  "status": "complete",
+  "source": {
+    "skill": "collect-blogger-updates",
+    "commands": ["opencli twitter tweets @user --limit 3 -f json"]
+  },
+  "coverage": { "requested": 1, "succeeded": 1, "failed": 0 },
+  "errors": [],
+  "data": {
+    "bloggers": [
+      {
+        "username": "@user",
+        "name": "财经观察",
+        "tweets": [
+          {"id": "10", "text": "半导体板块异动", "created_at": "2026-06-07T09:30:00+08:00", "likes": 100, "retweets": 20}
+        ]
+      }
+    ]
+  }
+}

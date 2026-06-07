@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T10:00:00+08:00",
+  "status": "complete",
+  "source": {
+    "skill": "collect-market-sentiment",
+    "commands": ["opencli xueqiu hot-stock --limit 5 -f json"]
+  },
+  "coverage": { "requested": 1, "succeeded": 1, "failed": 0 },
+  "errors": [],
+  "data": {
+    "sentiment_items": [
+      {"stock": "000725", "sentiment": "bullish", "score": 0.72, "volume": 12000}
+    ]
+  }
+}
