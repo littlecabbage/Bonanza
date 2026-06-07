@@ -37,7 +37,7 @@ allowed-tools: Bash(opencli:*)
 
 ## 输出格式
 
-遵循 `schemas/blogger-updates.schema.json` 契约。
+遵循 `blogger-updates.schema.json` 契约。
 
 ## 依赖
 

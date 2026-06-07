@@ -30,7 +30,7 @@ sys.path.insert(0, SCRIPT_DIR)
 import analyze_signals as sig
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCHEMA_PATH = os.path.join(REPO_ROOT, 'schemas', 'investment-signals.schema.json')
+SCHEMA_PATH = os.path.join(REPO_ROOT, 'skills', 'analyze-investment-signals', 'investment-signals.schema.json')
 with open(SCHEMA_PATH, encoding='utf-8') as f:
     SCHEMA = json.load(f)
 

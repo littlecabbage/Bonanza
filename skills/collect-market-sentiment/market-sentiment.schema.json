@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "InvestmentSignals",
-  "description": "Structured output from analyze-investment-signals skill.",
+  "title": "MarketSentiment",
+  "description": "Structured output from collect-market-sentiment skill.",
   "type": "object",
   "required": ["schema_version", "generated_at", "status", "source", "coverage", "errors", "data"],
   "properties": {
@@ -12,7 +12,7 @@
       "type": "object",
       "required": ["skill", "commands"],
       "properties": {
-        "skill": { "type": "string", "const": "analyze-investment-signals" },
+        "skill": { "type": "string", "const": "collect-market-sentiment" },
         "commands": { "type": "array", "items": { "type": "string" } }
       }
     },
@@ -28,25 +28,34 @@
     "errors": { "type": "array", "items": { "type": "string" } },
     "data": {
       "type": "object",
-      "required": ["dimensions", "confidence", "失效条件"],
       "properties": {
-        "dimensions": {
+        "xueqiu_hot_stocks": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "supporting_evidence", "opposing_evidence", "missing_data"],
+            "required": ["name", "symbol", "rank"],
             "properties": {
               "name": { "type": "string" },
-              "supporting_evidence": { "type": "array", "items": { "type": "object" } },
-              "opposing_evidence": { "type": "array", "items": { "type": "object" } },
-              "missing_data": { "type": "array", "items": { "type": "string" } },
-              "conclusion": { "type": "string" }
+              "symbol": { "type": "string" },
+              "rank": { "type": "integer" },
+              "change_percent": { "type": "number" },
+              "heat_score": { "type": "number" }
             }
           }
         },
-        "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
-        "失效条件": { "type": "array", "items": { "type": "string" } },
-        "coverage_rate": { "type": "number", "minimum": 0, "maximum": 1 }
+        "xueqiu_hot_posts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title", "url"],
+            "properties": {
+              "title": { "type": "string" },
+              "url": { "type": "string" },
+              "created_at": { "type": "string" },
+              "mentions": { "type": "integer" }
+            }
+          }
+        }
       }
     }
   }

@@ -304,7 +304,7 @@ class TestWorkflowGuideSkill(unittest.TestCase):
 class TestDataContracts(unittest.TestCase):
     """Verify schema files and fixture compliance with data contracts."""
 
-    SCHEMAS_DIR = os.path.join(REPO_ROOT, 'schemas')
+    SKILLS_DIR = os.path.join(REPO_ROOT, 'skills')
     FIXTURES_DIR = os.path.join(REPO_ROOT, 'tests', 'fixtures')
 
     # Common envelope fields required on every JSON output
@@ -322,24 +322,24 @@ class TestDataContracts(unittest.TestCase):
             return json.load(f)
 
     def test_all_schema_files_exist(self):
-        """All expected schema files must be present."""
-        expected_schemas = [
-            'workflow-state.schema.json',
-            'blogger-updates.schema.json',
-            'market-overview.schema.json',
-            'market-sentiment.schema.json',
-            'capital-movements.schema.json',
-            'market-news.schema.json',
-            'investment-entities.schema.json',
-            'stock-quotes.schema.json',
-            'investment-signals.schema.json',
-            'investment-scenarios.schema.json',
-        ]
-        for schema_name in expected_schemas:
-            fpath = os.path.join(self.SCHEMAS_DIR, schema_name)
+        """All expected schema files must be present in their skill directories."""
+        expected_schemas = {
+            'guide-investment-workflow': 'workflow-state.schema.json',
+            'collect-blogger-updates': 'blogger-updates.schema.json',
+            'collect-market-overview': 'market-overview.schema.json',
+            'collect-market-sentiment': 'market-sentiment.schema.json',
+            'collect-capital-movements': 'capital-movements.schema.json',
+            'collect-market-news': 'market-news.schema.json',
+            'extract-investment-entities': 'investment-entities.schema.json',
+            'fetch-stock-quotes': 'stock-quotes.schema.json',
+            'analyze-investment-signals': 'investment-signals.schema.json',
+            'build-investment-scenarios': 'investment-scenarios.schema.json',
+        }
+        for skill_name, schema_name in expected_schemas.items():
+            fpath = os.path.join(self.SKILLS_DIR, skill_name, schema_name)
             self.assertTrue(
                 os.path.exists(fpath),
-                f"Missing schema: {schema_name}"
+                f"Missing schema: {skill_name}/{schema_name}"
             )
             # Also validate they are valid JSON
             with open(fpath, encoding='utf-8') as f:
@@ -347,19 +347,24 @@ class TestDataContracts(unittest.TestCase):
 
     def test_all_schema_files_have_correct_version(self):
         """Every schema must pin schema_version to '1.0'."""
-        for fn in sorted(os.listdir(self.SCHEMAS_DIR)):
-            if not fn.endswith('.schema.json'):
+        # Find all schema files in skills directories
+        for skill_name in os.listdir(self.SKILLS_DIR):
+            skill_dir = os.path.join(self.SKILLS_DIR, skill_name)
+            if not os.path.isdir(skill_dir):
                 continue
-            fpath = os.path.join(self.SCHEMAS_DIR, fn)
-            with open(fpath, encoding='utf-8') as f:
-                schema = json.load(f)
-            # Check the const constraint exists for schema_version
-            props = schema.get('properties', {})
-            sv = props.get('schema_version', {})
-            self.assertEqual(
-                sv.get('const'), '1.0',
-                f"Schema '{fn}' must pin schema_version to '1.0'"
-            )
+            for fn in os.listdir(skill_dir):
+                if not fn.endswith('.schema.json'):
+                    continue
+                fpath = os.path.join(skill_dir, fn)
+                with open(fpath, encoding='utf-8') as f:
+                    schema = json.load(f)
+                # Check the const constraint exists for schema_version
+                props = schema.get('properties', {})
+                sv = props.get('schema_version', {})
+                self.assertEqual(
+                    sv.get('const'), '1.0',
+                    f"Schema '{skill_name}/{fn}' must pin schema_version to '1.0'"
+                )
 
     def test_valid_fixtures_have_envelope_fields(self):
         """All valid-* fixtures must contain the standard envelope fields."""

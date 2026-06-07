@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "MarketSentiment",
-  "description": "Structured output from collect-market-sentiment skill.",
+  "title": "InvestmentScenarios",
+  "description": "Structured output from build-investment-scenarios skill.",
   "type": "object",
   "required": ["schema_version", "generated_at", "status", "source", "coverage", "errors", "data"],
   "properties": {
@@ -12,7 +12,7 @@
       "type": "object",
       "required": ["skill", "commands"],
       "properties": {
-        "skill": { "type": "string", "const": "collect-market-sentiment" },
+        "skill": { "type": "string", "const": "build-investment-scenarios" },
         "commands": { "type": "array", "items": { "type": "string" } }
       }
     },
@@ -28,31 +28,31 @@
     "errors": { "type": "array", "items": { "type": "string" } },
     "data": {
       "type": "object",
+      "required": ["time_range", "scenarios"],
       "properties": {
-        "xueqiu_hot_stocks": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["name", "symbol", "rank"],
-            "properties": {
-              "name": { "type": "string" },
-              "symbol": { "type": "string" },
-              "rank": { "type": "integer" },
-              "change_percent": { "type": "number" },
-              "heat_score": { "type": "number" }
-            }
+        "time_range": { "type": "string" },
+        "user_constraints": {
+          "type": "object",
+          "properties": {
+            "risk_tolerance": { "type": "string" },
+            "position_limit": { "type": "string" }
           }
         },
-        "xueqiu_hot_posts": {
+        "scenarios": {
           "type": "array",
+          "minItems": 3,
           "items": {
             "type": "object",
-            "required": ["title", "url"],
+            "required": ["name", "trigger_conditions", "observation_indicators", "失效条件", "risks"],
             "properties": {
-              "title": { "type": "string" },
-              "url": { "type": "string" },
-              "created_at": { "type": "string" },
-              "mentions": { "type": "integer" }
+              "name": { "type": "string", "enum": ["bullish", "neutral", "bearish"] },
+              "description": { "type": "string" },
+              "trigger_conditions": { "type": "array", "items": { "type": "string" } },
+              "observation_indicators": { "type": "array", "items": { "type": "string" } },
+              "失效条件": { "type": "array", "items": { "type": "string" } },
+              "risks": { "type": "array", "items": { "type": "string" } },
+              "price_range": { "type": "object" },
+              "position_suggestion": { "type": "string" }
             }
           }
         }

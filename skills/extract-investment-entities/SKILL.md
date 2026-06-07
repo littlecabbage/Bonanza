@@ -60,7 +60,7 @@ description: 从文本或JSON数据中提取投资实体（股票、基金、行
 
 ## 输出格式
 
-生成 `investment-entities.json`，符合 `schemas/investment-entities.schema.json`：
+生成 `investment-entities.json`，符合 `investment-entities.schema.json`：
 
 ```json
 {

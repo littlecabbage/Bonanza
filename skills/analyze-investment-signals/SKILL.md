@@ -25,7 +25,7 @@ python3 analyze_signals.py <overview.json> [quotes.json] [capital.json] [blogger
 
 ## 输出格式
 
-生成 `investment-signals.json`，符合 `schemas/investment-signals.schema.json`：
+生成 `investment-signals.json`，符合 `investment-signals.schema.json`：
 
 ```json
 {

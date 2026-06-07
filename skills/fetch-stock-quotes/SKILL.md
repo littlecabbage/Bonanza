@@ -55,7 +55,7 @@ opencli eastmoney quote <symbol1>,<symbol2>,... -f json
 
 ## 输出格式
 
-生成 `stock-quotes.json`，符合 `schemas/stock-quotes.schema.json`：
+生成 `stock-quotes.json`，符合 `stock-quotes.schema.json`：
 
 ```json
 {

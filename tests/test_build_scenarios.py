@@ -24,7 +24,7 @@ mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCHEMA_PATH = os.path.join(REPO_ROOT, 'schemas', 'investment-scenarios.schema.json')
+SCHEMA_PATH = os.path.join(REPO_ROOT, 'skills', 'build-investment-scenarios', 'investment-scenarios.schema.json')
 with open(SCHEMA_PATH, encoding='utf-8') as f:
     SCHEMA = json.load(f)
 

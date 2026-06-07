@@ -36,7 +36,7 @@ allowed-tools: Bash(opencli:*)
 
 ## 输出格式
 
-遵循 `schemas/market-news.schema.json` 契约。
+遵循 `market-news.schema.json` 契约。
 
 ## 依赖
 

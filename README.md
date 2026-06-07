@@ -10,6 +10,40 @@
 
 每个 Skill 独立职责，通过 JSON 契约交接数据，支持灵活编排。
 
+## 用法
+
+### 项目内快速验证 Skill
+
+Claude Code 会从 `.claude/skills/` 目录加载 Skill。通过软连接，可以让项目内的 `skills/` 目录直接被 Claude Code 识别，无需复制到 `~/.claude/skills/`，实现开发即验证：
+
+```bash
+# 创建 .claude 目录并软连接 skills
+mkdir -p .claude
+ln -s ../skills .claude/skills
+```
+
+完成后项目结构如下：
+
+```
+.claude/
+└── skills -> ../skills        # 软连接指向项目 skills/
+skills/
+├── collect-market-overview/
+│   ├── SKILL.md
+│   ├── market-overview.schema.json
+│   └── scripts/
+├── analyze-investment-signals/
+│   ├── SKILL.md
+│   ├── investment-signals.schema.json
+│   └── scripts/
+└── ...
+```
+
+**优势**：
+- 修改 Skill 后立即可用，无需手动同步到 `~/.claude/skills/`
+- 多项目间互不干扰，每个项目独立维护自己的 Skill 集
+- Git 跟踪软连接，团队共享同一套配置
+
 ## 11 个模块化 Skill
 
 ### 数据采集（5 个）
@@ -50,7 +84,7 @@
 
 ## 数据契约
 
-所有 Skill 输出遵循统一 JSON Schema（`schemas/*.schema.json`）：
+所有 Skill 输出遵循统一 JSON Schema（各 `skills/<skill-name>/*.schema.json`）：
 
 ```json
 {

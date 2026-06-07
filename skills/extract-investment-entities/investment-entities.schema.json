@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "StockQuotes",
-  "description": "Structured output from fetch-stock-quotes skill.",
+  "title": "InvestmentEntities",
+  "description": "Structured output from extract-investment-entities skill.",
   "type": "object",
   "required": ["schema_version", "generated_at", "status", "source", "coverage", "errors", "data"],
   "properties": {
@@ -12,7 +12,7 @@
       "type": "object",
       "required": ["skill", "commands"],
       "properties": {
-        "skill": { "type": "string", "const": "fetch-stock-quotes" },
+        "skill": { "type": "string", "const": "extract-investment-entities" },
         "commands": { "type": "array", "items": { "type": "string" } }
       }
     },
@@ -29,25 +29,20 @@
     "data": {
       "type": "object",
       "properties": {
-        "quotes": {
+        "entities": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "code", "market", "price"],
+            "required": ["name", "symbol", "market", "type", "confidence"],
             "properties": {
               "name": { "type": "string" },
-              "code": { "type": "string" },
-              "market": { "type": "string", "enum": ["a", "us", "hk"] },
-              "price": { "type": "number" },
-              "change_percent": { "type": "number" },
-              "open": { "type": "number" },
-              "high": { "type": "number" },
-              "low": { "type": "number" },
-              "volume": { "type": "number" },
-              "turnover_rate": { "type": "number" },
-              "pe": { "type": "number" },
-              "pb": { "type": "number" },
-              "market_cap": { "type": "number" }
+              "symbol": { "type": "string" },
+              "market": { "type": "string", "enum": ["a", "us", "hk", "index"] },
+              "type": { "type": "string", "enum": ["stock", "sector", "index", "concept"] },
+              "mentions": { "type": "integer" },
+              "sources": { "type": "array", "items": { "type": "string" } },
+              "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+              "tendency": { "type": "string", "enum": ["bullish", "bearish", "neutral", "unknown"] }
             }
           }
         }

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "MarketNews",
-  "description": "Structured output from collect-market-news skill.",
+  "title": "BloggerUpdates",
+  "description": "Structured output from collect-blogger-updates skill.",
   "type": "object",
   "required": ["schema_version", "generated_at", "status", "source", "coverage", "errors", "data"],
   "properties": {
@@ -12,7 +12,7 @@
       "type": "object",
       "required": ["skill", "commands"],
       "properties": {
-        "skill": { "type": "string", "const": "collect-market-news" },
+        "skill": { "type": "string", "const": "collect-blogger-updates" },
         "commands": { "type": "array", "items": { "type": "string" } }
       }
     },
@@ -29,29 +29,29 @@
     "data": {
       "type": "object",
       "properties": {
-        "kuaixun": {
+        "bloggers": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["title", "time"],
+            "required": ["username", "name", "tweets"],
             "properties": {
-              "title": { "type": "string" },
-              "summary": { "type": "string" },
-              "time": { "type": "string" },
-              "priority": { "type": "string", "enum": ["high", "mid", "low"] }
-            }
-          }
-        },
-        "zhihu_hot": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["title", "url", "rank"],
-            "properties": {
-              "title": { "type": "string" },
-              "url": { "type": "string" },
-              "rank": { "type": "integer" },
-              "finance_relation": { "type": "string" }
+              "username": { "type": "string" },
+              "name": { "type": "string" },
+              "tweets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["id", "text", "created_at"],
+                  "properties": {
+                    "id": { "type": "string" },
+                    "text": { "type": "string" },
+                    "created_at": { "type": "string" },
+                    "url": { "type": "string" },
+                    "likes": { "type": "integer" },
+                    "retweets": { "type": "integer" }
+                  }
+                }
+              }
             }
           }
         }

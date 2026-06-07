@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "MarketOverview",
-  "description": "Structured output from collect-market-overview skill.",
+  "title": "CapitalMovements",
+  "description": "Structured output from collect-capital-movements skill.",
   "type": "object",
   "required": ["schema_version", "generated_at", "status", "source", "coverage", "errors", "data"],
   "properties": {
@@ -12,7 +12,7 @@
       "type": "object",
       "required": ["skill", "commands"],
       "properties": {
-        "skill": { "type": "string", "const": "collect-market-overview" },
+        "skill": { "type": "string", "const": "collect-capital-movements" },
         "commands": { "type": "array", "items": { "type": "string" } }
       }
     },
@@ -29,47 +29,44 @@
     "data": {
       "type": "object",
       "properties": {
-        "indices": {
+        "longhu": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "code", "price"],
+            "required": ["name", "code", "reason"],
             "properties": {
               "name": { "type": "string" },
               "code": { "type": "string" },
-              "price": { "type": "number" },
-              "change_percent": { "type": "number" },
-              "volume": { "type": "number" }
+              "reason": { "type": "string" },
+              "change_rate": { "type": "number" },
+              "net_amt": { "type": "number" },
+              "turnover": { "type": "number" }
             }
           }
         },
-        "hot_stocks": {
+        "money_flow": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "code", "rank"],
+            "required": ["name", "code"],
             "properties": {
               "name": { "type": "string" },
               "code": { "type": "string" },
-              "rank": { "type": "integer" },
-              "change_percent": { "type": "number" },
-              "heat_score": { "type": "number" }
-            }
-          }
-        },
-        "sectors": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["name", "code", "rank"],
-            "properties": {
-              "name": { "type": "string" },
-              "code": { "type": "string" },
-              "rank": { "type": "integer" },
-              "change_percent": { "type": "number" },
               "main_net_inflow": { "type": "number" },
-              "lead_stock": { "type": "string" },
-              "lead_code": { "type": "string" }
+              "change_percent": { "type": "number" }
+            }
+          }
+        },
+        "northbound": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["date"],
+            "properties": {
+              "date": { "type": "string" },
+              "net_buy": { "type": "number" },
+              "sh_buy": { "type": "number" },
+              "sz_buy": { "type": "number" }
             }
           }
         }

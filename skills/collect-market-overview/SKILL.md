@@ -51,7 +51,7 @@ allowed-tools: Bash(opencli:*)
 
 ## 输出格式
 
-遵循 `schemas/market-overview.schema.json` 契约。
+遵循 `market-overview.schema.json` 契约。
 
 ## 依赖
 

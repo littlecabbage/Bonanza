@@ -23,7 +23,7 @@ allowed-tools: Bash(python3:*)
 
 ## 输出
 
-生成 `investment-scenarios.json`，符合 `schemas/investment-scenarios.schema.json`。
+生成 `investment-scenarios.json`，符合 `investment-scenarios.schema.json`。
 
 ## 约束
 

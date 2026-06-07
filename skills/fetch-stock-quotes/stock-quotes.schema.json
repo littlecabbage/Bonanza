@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "InvestmentScenarios",
-  "description": "Structured output from build-investment-scenarios skill.",
+  "title": "StockQuotes",
+  "description": "Structured output from fetch-stock-quotes skill.",
   "type": "object",
   "required": ["schema_version", "generated_at", "status", "source", "coverage", "errors", "data"],
   "properties": {
@@ -12,7 +12,7 @@
       "type": "object",
       "required": ["skill", "commands"],
       "properties": {
-        "skill": { "type": "string", "const": "build-investment-scenarios" },
+        "skill": { "type": "string", "const": "fetch-stock-quotes" },
         "commands": { "type": "array", "items": { "type": "string" } }
       }
     },
@@ -28,31 +28,26 @@
     "errors": { "type": "array", "items": { "type": "string" } },
     "data": {
       "type": "object",
-      "required": ["time_range", "scenarios"],
       "properties": {
-        "time_range": { "type": "string" },
-        "user_constraints": {
-          "type": "object",
-          "properties": {
-            "risk_tolerance": { "type": "string" },
-            "position_limit": { "type": "string" }
-          }
-        },
-        "scenarios": {
+        "quotes": {
           "type": "array",
-          "minItems": 3,
           "items": {
             "type": "object",
-            "required": ["name", "trigger_conditions", "observation_indicators", "失效条件", "risks"],
+            "required": ["name", "code", "market", "price"],
             "properties": {
-              "name": { "type": "string", "enum": ["bullish", "neutral", "bearish"] },
-              "description": { "type": "string" },
-              "trigger_conditions": { "type": "array", "items": { "type": "string" } },
-              "observation_indicators": { "type": "array", "items": { "type": "string" } },
-              "失效条件": { "type": "array", "items": { "type": "string" } },
-              "risks": { "type": "array", "items": { "type": "string" } },
-              "price_range": { "type": "object" },
-              "position_suggestion": { "type": "string" }
+              "name": { "type": "string" },
+              "code": { "type": "string" },
+              "market": { "type": "string", "enum": ["a", "us", "hk"] },
+              "price": { "type": "number" },
+              "change_percent": { "type": "number" },
+              "open": { "type": "number" },
+              "high": { "type": "number" },
+              "low": { "type": "number" },
+              "volume": { "type": "number" },
+              "turnover_rate": { "type": "number" },
+              "pe": { "type": "number" },
+              "pb": { "type": "number" },
+              "market_cap": { "type": "number" }
             }
           }
         }
