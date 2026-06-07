@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T12:00:00+08:00",
+  "status": "complete",
+  "source": {
+    "skill": "analyze-investment-signals",
+    "commands": []
+  },
+  "coverage": {
+    "requested": 4,
+    "succeeded": 3,
+    "failed": 1
+  },
+  "errors": ["Missing blogger sentiment data"],
+  "data": {
+    "dimensions": [
+      {
+        "name": "行情",
+        "supporting_evidence": [{"claim": "上证指数上涨0.35%", "source": "market-overview.json"}],
+        "opposing_evidence": [{"claim": "成交额萎缩", "source": "market-overview.json"}],
+        "missing_data": ["blogger sentiment"],
+        "conclusion": "市场震荡偏强"
+      }
+    ],
+    "confidence": "medium",
+    "失效条件": ["上证跌破3200", "成交量低于3000亿"],
+    "coverage_rate": 0.75
+  }
+}

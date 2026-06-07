@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T10:00:00+08:00",
+  "status": "partial",
+  "source": {
+    "skill": "collect-blogger-updates",
+    "commands": ["opencli twitter tweets @Boqll5Tppdalvtw --limit 5 -f json"]
+  },
+  "coverage": {
+    "requested": 3,
+    "succeeded": 2,
+    "failed": 1
+  },
+  "errors": ["Browser session expired for @jiamibtc"],
+  "data": {
+    "bloggers": [
+      {
+        "username": "@Boqll5Tppdalvtw",
+        "name": "李总财经",
+        "tweets": [
+          {"id": "12345", "text": "PCB板块持续走强", "created_at": "2026-06-07T08:00:00+08:00", "url": "https://x.com/Boqll5Tppdalvtw/status/12345", "likes": 50, "retweets": 10}
+        ]
+      }
+    ]
+  }
+}

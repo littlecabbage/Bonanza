@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CapitalMovements",
+  "description": "Structured output from collect-capital-movements skill.",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "status", "source", "coverage", "errors", "data"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "generated_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$" },
+    "status": { "type": "string", "enum": ["complete", "partial", "failed"] },
+    "source": {
+      "type": "object",
+      "required": ["skill", "commands"],
+      "properties": {
+        "skill": { "type": "string", "const": "collect-capital-movements" },
+        "commands": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["requested", "succeeded", "failed"],
+      "properties": {
+        "requested": { "type": "integer", "minimum": 0 },
+        "succeeded": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "errors": { "type": "array", "items": { "type": "string" } },
+    "data": {
+      "type": "object",
+      "properties": {
+        "longhu": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "code", "reason"],
+            "properties": {
+              "name": { "type": "string" },
+              "code": { "type": "string" },
+              "reason": { "type": "string" },
+              "change_rate": { "type": "number" },
+              "net_amt": { "type": "number" },
+              "turnover": { "type": "number" }
+            }
+          }
+        },
+        "money_flow": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "code"],
+            "properties": {
+              "name": { "type": "string" },
+              "code": { "type": "string" },
+              "main_net_inflow": { "type": "number" },
+              "change_percent": { "type": "number" }
+            }
+          }
+        },
+        "northbound": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["date"],
+            "properties": {
+              "date": { "type": "string" },
+              "net_buy": { "type": "number" },
+              "sh_buy": { "type": "number" },
+              "sz_buy": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

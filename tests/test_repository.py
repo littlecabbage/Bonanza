@@ -213,5 +213,233 @@ class TestHtmlTemplate(unittest.TestCase):
         )
 
 
+class TestDataContracts(unittest.TestCase):
+    """Verify schema files and fixture compliance with data contracts."""
+
+    SCHEMAS_DIR = os.path.join(REPO_ROOT, 'schemas')
+    FIXTURES_DIR = os.path.join(REPO_ROOT, 'tests', 'fixtures')
+
+    # Common envelope fields required on every JSON output
+    ENVELOPE_FIELDS = [
+        'schema_version', 'generated_at', 'status',
+        'source', 'coverage', 'errors', 'data'
+    ]
+
+    # workflow-state has a different schema (orchestration, not business data)
+    NON_BUSINESS_FIXTURES = {'valid-workflow-state.json', 'invalid-workflow-state.json'}
+
+    def _load_json(self, relpath):
+        fpath = os.path.join(self.FIXTURES_DIR, relpath)
+        with open(fpath, encoding='utf-8') as f:
+            return json.load(f)
+
+    def test_all_schema_files_exist(self):
+        """All expected schema files must be present."""
+        expected_schemas = [
+            'workflow-state.schema.json',
+            'blogger-updates.schema.json',
+            'market-overview.schema.json',
+            'market-sentiment.schema.json',
+            'capital-movements.schema.json',
+            'market-news.schema.json',
+            'investment-entities.schema.json',
+            'stock-quotes.schema.json',
+            'investment-signals.schema.json',
+            'investment-scenarios.schema.json',
+        ]
+        for schema_name in expected_schemas:
+            fpath = os.path.join(self.SCHEMAS_DIR, schema_name)
+            self.assertTrue(
+                os.path.exists(fpath),
+                f"Missing schema: {schema_name}"
+            )
+            # Also validate they are valid JSON
+            with open(fpath, encoding='utf-8') as f:
+                json.load(f)
+
+    def test_all_schema_files_have_correct_version(self):
+        """Every schema must pin schema_version to '1.0'."""
+        for fn in sorted(os.listdir(self.SCHEMAS_DIR)):
+            if not fn.endswith('.schema.json'):
+                continue
+            fpath = os.path.join(self.SCHEMAS_DIR, fn)
+            with open(fpath, encoding='utf-8') as f:
+                schema = json.load(f)
+            # Check the const constraint exists for schema_version
+            props = schema.get('properties', {})
+            sv = props.get('schema_version', {})
+            self.assertEqual(
+                sv.get('const'), '1.0',
+                f"Schema '{fn}' must pin schema_version to '1.0'"
+            )
+
+    def test_valid_fixtures_have_envelope_fields(self):
+        """All valid-* fixtures must contain the standard envelope fields."""
+        for fn in sorted(os.listdir(self.FIXTURES_DIR)):
+            if not fn.startswith('valid-') or not fn.endswith('.json'):
+                continue
+            if fn in self.NON_BUSINESS_FIXTURES:
+                continue
+            data = self._load_json(fn)
+            for field in self.ENVELOPE_FIELDS:
+                self.assertIn(
+                    field, data,
+                    f"Fixture '{fn}' missing envelope field: {field}"
+                )
+
+    def test_valid_fixtures_have_schema_version_1(self):
+        """All valid fixtures must declare schema_version '1.0'."""
+        for fn in sorted(os.listdir(self.FIXTURES_DIR)):
+            if not fn.startswith('valid-') or not fn.endswith('.json'):
+                continue
+            if fn in self.NON_BUSINESS_FIXTURES:
+                continue
+            data = self._load_json(fn)
+            self.assertEqual(
+                data.get('schema_version'), '1.0',
+                f"Fixture '{fn}' must have schema_version='1.0'"
+            )
+
+    def test_valid_fixtures_have_timezone_in_generated_at(self):
+        """generated_at must include timezone offset."""
+        tz_pattern = re.compile(
+            r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$'
+        )
+        for fn in sorted(os.listdir(self.FIXTURES_DIR)):
+            if not fn.startswith('valid-') or not fn.endswith('.json'):
+                continue
+            if fn in self.NON_BUSINESS_FIXTURES:
+                continue
+            data = self._load_json(fn)
+            generated_at = data.get('generated_at', '')
+            self.assertTrue(
+                tz_pattern.match(generated_at),
+                f"Fixture '{fn}' generated_at='{generated_at}' "
+                f"must match ISO 8601 with timezone"
+            )
+
+    def test_invalid_fixtures_fail_specific_validation(self):
+        """Each invalid fixture should fail its specific validation test.
+
+        - invalid-market-overview.json: missing envelope fields
+        - invalid-blogger-updates.json: missing envelope fields
+        - invalid-stock-quotes-no-timezone.json: invalid timezone format
+        """
+        fixtures_dir = os.path.join(REPO_ROOT, 'tests', 'fixtures')
+
+        # Test envelope-invalid fixtures
+        envelope_invalid = {
+            'invalid-market-overview.json',
+            'invalid-blogger-updates.json'
+        }
+        for fn in envelope_invalid:
+            fpath = os.path.join(fixtures_dir, fn)
+            if not os.path.exists(fpath):
+                continue
+            with open(fpath, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            missing = [
+                field for field in self.ENVELOPE_FIELDS if field not in data
+            ]
+            self.assertGreater(
+                len(missing), 0,
+                f"Fixture '{fn}' should be missing envelope fields"
+            )
+
+        # Test timezone-invalid fixture
+        tz_invalid = 'invalid-stock-quotes-no-timezone.json'
+        tz_path = os.path.join(fixtures_dir, tz_invalid)
+        if os.path.exists(tz_path):
+            with open(tz_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            tz_pattern = re.compile(
+                r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$'
+            )
+            generated_at = data.get('generated_at', '')
+            self.assertFalse(
+                tz_pattern.match(generated_at),
+                f"Fixture '{tz_invalid}' should have invalid timezone format"
+            )
+
+    def test_valid_status_values(self):
+        """All fixtures with status field must use allowed values."""
+        allowed = {'complete', 'partial', 'failed'}
+        for fn in sorted(os.listdir(self.FIXTURES_DIR)):
+            if not fn.endswith('.json'):
+                continue
+            if fn in self.NON_BUSINESS_FIXTURES:
+                continue
+            data = self._load_json(fn)
+            if 'status' in data:
+                self.assertIn(
+                    data['status'], allowed,
+                    f"Fixture '{fn}' has invalid status: {data['status']}"
+                )
+
+    def test_partial_status_has_errors_or_coverage(self):
+        """Partial status must explain what's missing via errors or coverage."""
+        for fn in sorted(os.listdir(self.FIXTURES_DIR)):
+            if not fn.endswith('.json'):
+                continue
+            if fn in self.NON_BUSINESS_FIXTURES:
+                continue
+            data = self._load_json(fn)
+            if data.get('status') != 'partial':
+                continue
+            has_errors = bool(data.get('errors'))
+            coverage = data.get('coverage', {})
+            has_coverage_gap = (
+                coverage.get('failed', 0) > 0 or
+                coverage.get('succeeded', 0) < coverage.get('requested', 0)
+            )
+            self.assertTrue(
+                has_errors or has_coverage_gap,
+                f"Fixture '{fn}' has status='partial' but no errors or "
+                f"coverage gap to explain what's missing"
+            )
+
+    def test_coverage_fields_are_non_negative(self):
+        """Coverage requested/succeeded/failed must be non-negative integers."""
+        for fn in sorted(os.listdir(self.FIXTURES_DIR)):
+            if not fn.endswith('.json'):
+                continue
+            if fn in self.NON_BUSINESS_FIXTURES:
+                continue
+            data = self._load_json(fn)
+            coverage = data.get('coverage')
+            if not coverage:
+                continue
+            for key in ['requested', 'succeeded', 'failed']:
+                val = coverage.get(key, 0)
+                self.assertIsInstance(
+                    val, int,
+                    f"Fixture '{fn}' coverage.{key} must be int, got {type(val)}"
+                )
+                self.assertGreaterEqual(
+                    val, 0,
+                    f"Fixture '{fn}' coverage.{key} must be >= 0"
+                )
+
+    def test_source_commands_is_list(self):
+        """source.commands must be a list of strings."""
+        for fn in sorted(os.listdir(self.FIXTURES_DIR)):
+            if not fn.startswith('valid-') or not fn.endswith('.json'):
+                continue
+            if fn in self.NON_BUSINESS_FIXTURES:
+                continue
+            data = self._load_json(fn)
+            source = data.get('source', {})
+            commands = source.get('commands')
+            self.assertIsInstance(
+                commands, list,
+                f"Fixture '{fn}' source.commands must be a list"
+            )
+            for cmd in commands:
+                self.assertIsInstance(
+                    cmd, str,
+                    f"Fixture '{fn}' source.commands contains non-string: {cmd}"
+                )
+
+
 if __name__ == '__main__':
     unittest.main()

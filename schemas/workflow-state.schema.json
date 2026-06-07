@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WorkflowState",
+  "description": "Investment workflow run state — tracks step completion, file locations, and next-step recommendations.",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "run_id", "steps"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "description": "ISO 8601 with timezone",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$"
+    },
+    "run_id": {
+      "type": "string",
+      "description": "Unique run identifier, e.g. '2026-06-07-001'"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["complete", "partial", "failed"]
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["skill", "status"],
+        "properties": {
+          "skill": { "type": "string" },
+          "status": { "type": "string", "enum": ["pending", "running", "complete", "partial", "failed", "skipped"] },
+          "output_file": { "type": "string" },
+          "completed_at": { "type": "string" },
+          "errors": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "recommended_next": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["skill", "reason"],
+        "properties": {
+          "skill": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  }
+}

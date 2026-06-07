@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-07T11:00:00+08:00",
+  "status": "complete",
+  "source": {
+    "skill": "extract-investment-entities",
+    "commands": []
+  },
+  "coverage": {
+    "requested": 1,
+    "succeeded": 1,
+    "failed": 0
+  },
+  "errors": [],
+  "data": {
+    "entities": [
+      {"name": "京东方A", "symbol": "000725", "market": "a", "type": "stock", "mentions": 5, "sources": ["@Boqll5Tppdalvtw"], "confidence": "high", "tendency": "bullish"},
+      {"name": "PCB产业链", "symbol": "BK1340", "market": "a", "type": "sector", "mentions": 3, "sources": ["@WallStreet0Name"], "confidence": "medium", "tendency": "bullish"}
+    ]
+  }
+}

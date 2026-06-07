@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MarketSentiment",
+  "description": "Structured output from collect-market-sentiment skill.",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "status", "source", "coverage", "errors", "data"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "generated_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$" },
+    "status": { "type": "string", "enum": ["complete", "partial", "failed"] },
+    "source": {
+      "type": "object",
+      "required": ["skill", "commands"],
+      "properties": {
+        "skill": { "type": "string", "const": "collect-market-sentiment" },
+        "commands": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["requested", "succeeded", "failed"],
+      "properties": {
+        "requested": { "type": "integer", "minimum": 0 },
+        "succeeded": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "errors": { "type": "array", "items": { "type": "string" } },
+    "data": {
+      "type": "object",
+      "properties": {
+        "xueqiu_hot_stocks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "symbol", "rank"],
+            "properties": {
+              "name": { "type": "string" },
+              "symbol": { "type": "string" },
+              "rank": { "type": "integer" },
+              "change_percent": { "type": "number" },
+              "heat_score": { "type": "number" }
+            }
+          }
+        },
+        "xueqiu_hot_posts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title", "url"],
+            "properties": {
+              "title": { "type": "string" },
+              "url": { "type": "string" },
+              "created_at": { "type": "string" },
+              "mentions": { "type": "integer" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
