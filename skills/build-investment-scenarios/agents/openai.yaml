@@ -1,0 +1,6 @@
+metadata:
+  display_name: "投资情景推演"
+  short_description: "多情景投资分析"
+constraints:
+  - "不产生个性化仓位"
+  - "缺少行情不生成价格区间"
