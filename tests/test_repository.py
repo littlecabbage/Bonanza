@@ -1,0 +1,217 @@
+#!/usr/bin/env python3
+"""Repository validation baseline tests.
+
+These tests establish a baseline for repository quality. Some tests
+currently fail due to known issues in the legacy monolithic skill
+that will be fixed during the modular refactor (Task 8).
+"""
+
+import unittest
+import json
+import os
+import re
+
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SKILLS_DIR = os.path.join(REPO_ROOT, 'skills')
+
+
+def parse_frontmatter(content):
+    """Parse YAML frontmatter from a SKILL.md file.
+
+    Minimal parser — no third-party YAML dependency.
+    Returns (metadata_dict, body_text) or (None, content) if no frontmatter.
+    """
+    if not content.startswith('---'):
+        return None, content
+    end_idx = content.find('---', 3)
+    if end_idx == -1:
+        return None, content
+    fm_text = content[3:end_idx].strip()
+    body = content[end_idx + 3:].strip()
+
+    metadata = {}
+    for line in fm_text.split('\n'):
+        line = line.strip()
+        if not line or line.startswith('#'):
+            continue
+        colon_idx = line.find(':')
+        if colon_idx == -1:
+            continue
+        key = line[:colon_idx].strip()
+        value = line[colon_idx + 1:].strip()
+        metadata[key] = value.strip('"').strip("'")
+    return metadata, body
+
+
+class TestSkillFrontmatter(unittest.TestCase):
+    """Verify all SKILL.md files have required frontmatter fields."""
+
+    def _get_skill_dirs(self):
+        if not os.path.isdir(SKILLS_DIR):
+            return []
+        return [
+            os.path.join(SKILLS_DIR, d)
+            for d in sorted(os.listdir(SKILLS_DIR))
+            if os.path.isdir(os.path.join(SKILLS_DIR, d))
+        ]
+
+    def test_all_skills_have_valid_frontmatter(self):
+        """Every SKILL.md must have frontmatter with name and description."""
+        for skill_dir in self._get_skill_dirs():
+            skill_md = os.path.join(skill_dir, 'SKILL.md')
+            if not os.path.exists(skill_md):
+                continue
+            with open(skill_md, encoding='utf-8') as f:
+                fm, body = parse_frontmatter(f.read())
+            skill_name = os.path.basename(skill_dir)
+            self.assertIsNotNone(
+                fm,
+                f"Skill '{skill_name}' has no YAML frontmatter"
+            )
+            self.assertIn(
+                'name', fm,
+                f"Skill '{skill_name}' missing 'name' in frontmatter"
+            )
+            self.assertIn(
+                'description', fm,
+                f"Skill '{skill_name}' missing 'description' in frontmatter"
+            )
+
+    def test_skill_name_matches_directory(self):
+        """Frontmatter 'name' should match the skill directory name."""
+        for skill_dir in self._get_skill_dirs():
+            skill_md = os.path.join(skill_dir, 'SKILL.md')
+            if not os.path.exists(skill_md):
+                continue
+            with open(skill_md, encoding='utf-8') as f:
+                fm, _ = parse_frontmatter(f.read())
+            if fm is None or 'name' not in fm:
+                continue
+            dir_name = os.path.basename(skill_dir)
+            self.assertEqual(
+                fm['name'], dir_name,
+                f"Directory '{dir_name}' has frontmatter name '{fm['name']}'"
+            )
+
+
+class TestJsonFiles(unittest.TestCase):
+    """Verify all JSON reference files are syntactically valid."""
+
+    def _get_json_files(self):
+        json_files = []
+        if not os.path.isdir(SKILLS_DIR):
+            return json_files
+        for skill_name in sorted(os.listdir(SKILLS_DIR)):
+            refs_dir = os.path.join(SKILLS_DIR, skill_name, 'references')
+            if not os.path.isdir(refs_dir):
+                continue
+            for fn in sorted(os.listdir(refs_dir)):
+                if fn.endswith('.json'):
+                    json_files.append(os.path.join(refs_dir, fn))
+        return json_files
+
+    def test_all_json_files_are_valid(self):
+        """Every JSON file must parse without errors."""
+        for fpath in self._get_json_files():
+            with open(fpath, encoding='utf-8') as f:
+                try:
+                    json.load(f)
+                except json.JSONDecodeError as e:
+                    self.fail(f"Invalid JSON in {fpath}: {e}")
+
+
+class TestHtmlTemplate(unittest.TestCase):
+    """Check HTML template for structural issues.
+
+    Known baseline issues (to be fixed in Task 8):
+    - Section "一、投资建议（核心）" appears twice (lines 333 and 696)
+    - SKILL.md uses .advice-buy-strong, template uses .advice-strong-buy
+    """
+
+    TEMPLATE_PATH = os.path.join(
+        SKILLS_DIR,
+        'opencli-investment-report',
+        'references',
+        'report-template.html'
+    )
+    SKILL_MD_PATH = os.path.join(
+        SKILLS_DIR,
+        'opencli-investment-report',
+        'SKILL.md'
+    )
+
+    def _read_template(self):
+        with open(self.TEMPLATE_PATH, encoding='utf-8') as f:
+            return f.read()
+
+    def _read_skill_md(self):
+        with open(self.SKILL_MD_PATH, encoding='utf-8') as f:
+            return f.read()
+
+    def test_no_duplicate_h2_sections(self):
+        """Template must not have duplicate <h2> sections.
+
+        KNOWN FAILURE: "一、投资建议（核心）" appears twice.
+        Will be fixed in Task 8 when template is cleaned up.
+        """
+        content = self._read_template()
+        h2_pattern = re.compile(r'<h2>\s*([^<]+)\s*</h2>')
+        headings = h2_pattern.findall(content)
+        seen = {}
+        duplicates = []
+        for h in headings:
+            seen[h] = seen.get(h, 0) + 1
+            if seen[h] > 1:
+                duplicates.append(h)
+        self.assertEqual(
+            len(duplicates), 0,
+            f"Duplicate <h2> sections found: {duplicates}. "
+            f"Known issue to be fixed in Task 8."
+        )
+
+    def test_css_class_consistency(self):
+        """CSS class names in SKILL.md must match those in HTML template.
+
+        KNOWN FAILURE: SKILL.md uses .advice-buy-strong,
+        but HTML template uses .advice-strong-buy.
+        Will be fixed in Task 8.
+        """
+        skill_content = self._read_skill_md()
+        html_content = self._read_template()
+
+        skill_classes = set(re.findall(r'\.advice-[\w-]+', skill_content))
+        html_classes = set(re.findall(r'\.advice-[\w-]+', html_content))
+
+        # Remove level-variant classes (those are consistent)
+        skill_advice = {c for c in skill_classes if 'level' not in c}
+        html_advice = {c for c in html_classes if 'level' not in c}
+
+        inconsistent = skill_advice.symmetric_difference(html_advice)
+        # .advice-grid and .advice-grid-item only exist in HTML template (expected)
+        inconsistent.discard('.advice-grid')
+        inconsistent.discard('.advice-grid-item')
+
+        self.assertEqual(
+            len(inconsistent), 0,
+            f"CSS class mismatch between SKILL.md and template: {inconsistent}. "
+            f"Known: SKILL.md has .advice-buy-strong, HTML has .advice-strong-buy."
+        )
+
+    def test_placeholder_count_documented(self):
+        """Template placeholders should be tracked for render validation.
+
+        In the template source, placeholders are expected.
+        When Task 8 implements deterministic rendering, a separate test
+        will verify that rendered HTML has zero residual placeholders.
+        """
+        content = self._read_template()
+        placeholders = re.findall(r'\{\{[^}]+\}\}', content)
+        # Template MUST have placeholders for data injection — this is normal.
+        self.assertGreater(
+            len(placeholders), 0,
+            "Template must have placeholders for data injection"
+        )
+
+
+if __name__ == '__main__':
+    unittest.main()
