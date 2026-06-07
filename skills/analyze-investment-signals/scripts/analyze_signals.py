@@ -419,20 +419,27 @@ def build_result(
     }
 
 
+def detect_dimension(path: str) -> str:
+    """Detect dimension from filename (case-insensitive)."""
+    fname = os.path.basename(path).lower()
+    if "quote" in fname:
+        return "price"
+    if "capital" in fname:
+        return "capital"
+    if "sentiment" in fname:
+        return "sentiment"
+    if "blogger" in fname:
+        return "sentiment"
+    if "news" in fname:
+        return "event"
+    if "overview" in fname:
+        return "event"
+    return "event"  # fallback
+
+
 def main():
     args = sys.argv[1:]
     command = "python3 analyze_signals.py " + " ".join(args)
-
-    # File index mapping: position -> dimension name
-    INPUT_PATHS = {
-        0: ("overview", "market-overview"),
-        1: ("quotes", "price"),
-        2: ("capital", "capital"),
-        3: ("blogger", "sentiment"),
-        4: ("sentiment", "sentiment"),
-        5: ("news", "event"),
-        6: ("overview", "event"),  # overview can also provide events
-    }
 
     # Last arg is output path if it looks like a file path
     output_path = None
@@ -479,25 +486,9 @@ def main():
             continue
         succeeded += 1
 
-        # Determine which dimension(s) this file feeds
-        if i < len(INPUT_PATHS):
-            _, dim = INPUT_PATHS[i]
-        else:
-            # Guess from filename
-            fname = os.path.basename(path).lower()
-            if "quote" in fname:
-                dim = "price"
-            elif "capital" in fname:
-                dim = "capital"
-            elif "sentiment" in fname or "blogger" in fname:
-                dim = "sentiment"
-            elif "news" in fname or "overview" in fname:
-                dim = "event"
-            else:
-                dim = None
-
-        if dim:
-            loaded[dim] = data
+        # Determine dimension from filename
+        dim = detect_dimension(path)
+        loaded[dim] = data
 
     # Run dimension analysis
     dimension_results = [

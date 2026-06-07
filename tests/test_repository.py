@@ -124,7 +124,6 @@ class TestHtmlTemplate(unittest.TestCase):
     """Check HTML template for structural issues.
 
     Template is expected at skills/render-investment-report/assets/.
-    Until render-investment-report skill is created, tests skip gracefully.
     """
 
     TEMPLATE_PATH = os.path.join(
