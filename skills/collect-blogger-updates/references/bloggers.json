@@ -1,0 +1,19 @@
+{
+  "bloggers": [
+    {
+      "username": "wallstreetbull",
+      "name": "华尔街多头",
+      "focus": "美股科技股"
+    },
+    {
+      "username": "cnstockmaster",
+      "name": "A股操盘手",
+      "focus": "A股板块轮动"
+    },
+    {
+      "username": "hkvalueinvestor",
+      "name": "港股价值投资者",
+      "focus": "港股低估值"
+    }
+  ]
+}

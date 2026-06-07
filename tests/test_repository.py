@@ -531,5 +531,93 @@ class TestDataContracts(unittest.TestCase):
                 )
 
 
+class TestCollectionSkills(unittest.TestCase):
+    """Verify all 5 collection skills have correct structure."""
+
+    COLLECTION_SKILLS = [
+        'collect-blogger-updates',
+        'collect-market-overview',
+        'collect-market-sentiment',
+        'collect-capital-movements',
+        'collect-market-news'
+    ]
+
+    def test_collection_skills_exist(self):
+        """All 5 collection skills must exist."""
+        for skill_name in self.COLLECTION_SKILLS:
+            skill_dir = os.path.join(SKILLS_DIR, skill_name)
+            self.assertTrue(
+                os.path.isdir(skill_dir),
+                f"Collection skill missing: {skill_name}"
+            )
+
+    def test_collection_skills_have_required_files(self):
+        """Each collection skill must have SKILL.md and agents/openai.yaml."""
+        for skill_name in self.COLLECTION_SKILLS:
+            skill_dir = os.path.join(SKILLS_DIR, skill_name)
+
+            skill_md = os.path.join(skill_dir, 'SKILL.md')
+            self.assertTrue(
+                os.path.exists(skill_md),
+                f"Skill {skill_name} missing SKILL.md"
+            )
+
+            openai_yaml = os.path.join(skill_dir, 'agents', 'openai.yaml')
+            self.assertTrue(
+                os.path.exists(openai_yaml),
+                f"Skill {skill_name} missing agents/openai.yaml"
+            )
+
+    def test_collection_skills_frontmatter_complete(self):
+        """Each collection skill must have name and description in frontmatter."""
+        for skill_name in self.COLLECTION_SKILLS:
+            skill_md = os.path.join(SKILLS_DIR, skill_name, 'SKILL.md')
+            with open(skill_md, 'r', encoding='utf-8') as f:
+                content = f.read()
+
+            metadata, body = parse_frontmatter(content)
+
+            self.assertIsNotNone(
+                metadata,
+                f"Skill {skill_name} missing frontmatter"
+            )
+            self.assertIn(
+                'name',
+                metadata,
+                f"Skill {skill_name} missing 'name' in frontmatter"
+            )
+            self.assertIn(
+                'description',
+                metadata,
+                f"Skill {skill_name} missing 'description' in frontmatter"
+            )
+            self.assertEqual(
+                metadata['name'],
+                skill_name,
+                f"Skill {skill_name} name mismatch"
+            )
+
+    def test_collection_skills_declare_output_files(self):
+        """Each collection skill must declare its output file in SKILL.md."""
+        expected_outputs = {
+            'collect-blogger-updates': 'blogger-updates.json',
+            'collect-market-overview': 'market-overview.json',
+            'collect-market-sentiment': 'market-sentiment.json',
+            'collect-capital-movements': 'capital-movements.json',
+            'collect-market-news': 'market-news.json'
+        }
+
+        for skill_name, output_file in expected_outputs.items():
+            skill_md = os.path.join(SKILLS_DIR, skill_name, 'SKILL.md')
+            with open(skill_md, 'r', encoding='utf-8') as f:
+                content = f.read()
+
+            self.assertIn(
+                output_file,
+                content,
+                f"Skill {skill_name} must mention output file {output_file}"
+            )
+
+
 if __name__ == '__main__':
     unittest.main()

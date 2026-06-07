@@ -1,0 +1,14 @@
+metadata:
+  display_name: "采集市场新闻"
+  short_description: "获取财经快讯、政策新闻、行业动态"
+  default_prompt: "采集今日市场新闻"
+
+capabilities:
+  - "财经快讯采集"
+  - "政策新闻采集"
+  - "行业新闻采集"
+
+constraints:
+  - "不分析影响"
+  - "不评估重要性"
+  - "依赖东方财富接口"

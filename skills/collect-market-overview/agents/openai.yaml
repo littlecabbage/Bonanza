@@ -1,0 +1,14 @@
+metadata:
+  display_name: "采集市场概览"
+  short_description: "获取大盘指数、板块排行、热股列表"
+  default_prompt: "采集今日市场概览"
+
+capabilities:
+  - "大盘指数采集"
+  - "板块排行采集"
+  - "热门股票采集"
+
+constraints:
+  - "不分析趋势"
+  - "不推荐股票"
+  - "依赖东方财富接口"
