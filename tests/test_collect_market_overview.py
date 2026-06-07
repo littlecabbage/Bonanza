@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Tests for collect.py (collect-market-overview) — all subprocess.run calls are mocked."""
 
+import importlib.util
 import json
 import os
 import re
@@ -9,15 +10,16 @@ import tempfile
 import unittest
 from unittest.mock import patch, MagicMock
 
-SCRIPT_DIR = os.path.join(
+MODULE_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     'skills',
     'collect-market-overview',
-    'scripts'
+    'scripts',
+    'collect.py',
 )
-sys.path.insert(0, SCRIPT_DIR)
-
-import collect
+spec = importlib.util.spec_from_file_location("collect_market_mod", MODULE_PATH)
+collect = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(collect)
 
 SAMPLE_INDEX = {"name": "上证指数", "code": "000001", "price": 3200.50,
                  "changePercent": 0.5, "volume": 2000000000}
